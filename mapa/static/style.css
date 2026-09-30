@@ -34,6 +34,9 @@ h1 {
 }
 h1 em { color: var(--glow); }
 header p { margin: 6px 0 0; color: var(--ink-soft); max-width: 60ch; }
+header .rec { margin-top: 10px; padding: 8px 12px; max-width: 70ch; color: #f3e6c8; font-size: 13.5px; line-height: 1.45;
+  border: 1px solid rgba(244, 185, 96, 0.55); border-radius: 8px; background: rgba(244, 185, 96, 0.10); }
+header .rec b { color: #f4b960; letter-spacing: .05em; text-transform: uppercase; margin-right: 4px; }
 
 main {
   display: grid;

@@ -13,6 +13,7 @@ acumulado del servidor.
 from __future__ import annotations
 
 import asyncio
+import datetime
 import json
 import re
 import sys
@@ -57,6 +58,14 @@ async def grabar(port: int, out: Path):
                 m["total_cost_usd"], prev_cost = round(m["total_cost_usd"] - prev_cost, 6), m["total_cost_usd"]
             res[text] = m
             print(f"  {text!r}: {len(m.get('probs') or {})} lugares con probabilidad, {m.get('latency_ms')} ms")
+    # quién respondió y cuándo: las páginas lo enseñan en el aviso de GRABACIÓN
+    brain = next((m.get("brain") for m in res.values() if m.get("brain")), None)
+    modelo = ("jev (TypeSafe), por API" if port == 8780 else
+              "el reordenador afinado (bge-reranker), en una tarjeta gráfica de casa" if brain == "bge-reranker afinado" else
+              "Laya destilada, en una tarjeta gráfica de casa")
+    meses = "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split()
+    hoy = datetime.date.today()
+    res["_meta"] = {"fecha": f"{hoy.day} de {meses[hoy.month - 1]} de {hoy.year}", "modelo": modelo}
     out.write_text(json.dumps(res, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"{len(res)} búsquedas -> {out} ({out.stat().st_size // 1024} KB)")
 

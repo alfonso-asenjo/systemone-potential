@@ -30,6 +30,9 @@ body { font-family: Barlow, system-ui, sans-serif; }
 
 .kpis { position: absolute; right: 52px; top: 40px; width: 470px; background: #FFF8EC; border: 2.5px solid var(--ink);
   box-shadow: 7px 7px 0 var(--ink); padding: 14px 20px 16px; }
+.rec-banner { position: absolute; left: 468px; top: 40px; width: 584px; padding: 12px 18px; background: var(--ink); color: #FFF6E4;
+  font: 500 17px/1.4 "Barlow", sans-serif; box-shadow: 6px 6px 0 rgba(0,0,0,.18); }
+.rec-banner b { font: 600 19px "Barlow Condensed", sans-serif; letter-spacing: .14em; margin-right: 10px; color: #F6C343; }
 .live { display: flex; justify-content: flex-end; align-items: center; gap: 10px;
   font: 600 15px "Barlow Condensed", sans-serif; letter-spacing: .16em; }
 .live .pill { display: inline-flex; align-items: center; gap: 8px; background: var(--ink); color: #FFF6E4; padding: 5px 12px 4px; }
@@ -62,6 +65,7 @@ body { font-family: Barlow, system-ui, sans-serif; }
     <div class="sub" id="sub">Bluesky en directo · leído por Laya</div>
   </header>
 
+  <div class="rec-banner" id="rec-banner" hidden></div>
   <aside class="kpis">
     <div class="live"><span class="pill" id="pill"><i></i><span id="pill-t">EN DIRECTO</span></span><span id="clock"></span></div>
     <div class="row">
@@ -1985,6 +1989,11 @@ async function playRecording(url) {
   $("pill-t").textContent = "GRABADO";
   $("sub").textContent = "Bluesky grabado · leído por Laya";   // la fecha va en la nota: larga, pisaba los botes
   $("cred-posts").textContent = "Posts: Bluesky Jetstream, grabados sin su texto · sin llamadas a ninguna API";
+  const hm = (t) => new Date(t * 1000).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+  const end = rec.recorded_at + rec.batches[rec.batches.length - 1][0];
+  $("rec-banner").innerHTML = "<b>GRABACIÓN</b>Lo que ves lo leyó Laya en directo el " + day + ", de " + hm(rec.recorded_at)
+    + " a " + hm(end) + ", en una tarjeta gráfica de casa. Aquí se reproduce tal cual: no hay ningún modelo funcionando.";
+  $("rec-banner").hidden = false;
   const last = rec.batches[rec.batches.length - 1][0];
   if (rec.hello && rec.hello.history) loadHistory(rec.hello.history);
   else {

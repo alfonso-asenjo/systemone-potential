@@ -76,6 +76,18 @@ function drawLand(topo) {
 const GRABADAS = new URLSearchParams(location.search).has('grabacion')
   ? fetch('grabacion.json').then((r) => r.json()) : null;
 
+
+// el aviso grande de las grabaciones: no hay ningún modelo funcionando, pero es lo que uno dijo en directo
+if (GRABADAS) GRABADAS.then((d) => {
+  const m = d._meta || {};
+  delete d._meta;
+  const el = document.getElementById('rec');
+  el.innerHTML = '<b>● Búsquedas grabadas</b> Las respuestas las dio ' + (m.modelo || 'el modelo') + ' en directo'
+    + (m.fecha ? ' el ' + m.fecha : '') + '. Aquí se reproducen tal cual, sin ningún modelo funcionando: '
+    + 'solo responden las búsquedas de ejemplo.';
+  el.hidden = false;
+});
+
 function connect() {
   if (GRABADAS) return;
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';

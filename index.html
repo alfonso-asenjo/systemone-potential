@@ -48,6 +48,9 @@ h1 .x::after { content: ""; position: absolute; left: -2%; right: -2%; top: 52%;
 
 h2 { font-family: var(--display); font-stretch: 78%; font-weight: 800; font-size: clamp(28px, 4vw, 40px); line-height: 1; margin: 0 0 22px; }
 section { padding-block: 40px; border-top: 1px solid var(--line); }
+.rec-note { margin: -8px 0 22px; padding: 10px 14px; max-width: 80ch; border-left: 3px solid var(--accent); background: var(--surface);
+  border-radius: 0 8px 8px 0; font-size: 15px; }
+.rec-note b { color: var(--accent); }
 .demos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .demo { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
 .demo img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); }
@@ -95,6 +98,7 @@ footer p { margin: 0 0 8px; max-width: 90ch; }
 
 <section class="wrap" aria-labelledby="demos-h">
   <h2 id="demos-h">Las demos</h2>
+  <p class="rec-note"><b>● Todo son grabaciones.</b> Cada demo reproduce lo que un modelo decidió de verdad, en directo: las partidas, los posts y las búsquedas se grabaron mientras jev, Laya o el reordenador respondían. Aquí se reproducen tal cual, sin ningún modelo funcionando detrás; para ejecutarlos en directo, el código está en GitHub.</p>
   <div class="demos">
 
     <article class="demo">

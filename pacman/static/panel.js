@@ -198,17 +198,21 @@ export class Panel {
     const tag = $('mode-tag');
     tag.textContent = 'partida grabada';
     tag.className = 'tag tag-replay';
+    const when = meta && meta.played
+      ? new Date(meta.played * 1000).toLocaleDateString('es-ES',
+          { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
     const hint = document.querySelector('.hint');
     if (hint) {
-      const when = meta && meta.played
-        ? new Date(meta.played * 1000).toLocaleDateString('es-ES',
-            { day: 'numeric', month: 'long', year: 'numeric' })
-        : null;
-      hint.textContent = when
-        ? `Cada decisión es la que ${this.brain} tomó de verdad el ${when}. Espacio pausa, R vuelve a empezar.`
-        : `Cada decisión es la que ${this.brain} tomó de verdad. Espacio pausa, R vuelve a empezar.`;
+      hint.textContent = 'Espacio pausa, R vuelve a empezar.';
       hint.style.display = '';
     }
+    // el aviso grande: esto no es un modelo funcionando, pero sí lo que un modelo decidió en directo
+    const how = this.brain === 'jev' ? 'por API' : 'en una tarjeta gráfica de casa';
+    const on = when ? ' el ' + when : '';
+    $('rec-t').textContent = 'Cada decisión la tomó ' + this.brain + ' en directo' + on + ', ' + how
+      + ', con sus tiempos de respuesta reales. Aquí se reproduce tal cual: no hay ningún modelo funcionando.';
+    $('rec').hidden = false;
   }
 
   mode(source) {

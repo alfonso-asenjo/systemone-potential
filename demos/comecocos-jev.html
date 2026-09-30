@@ -139,6 +139,11 @@ canvas {
   height: auto;
 }
 
+.rec { max-width: 1180px; margin: 12px auto 0; padding: 10px 16px; border: 1px solid rgba(245, 183, 0, 0.55);
+  border-radius: 8px; background: rgba(245, 183, 0, 0.10); color: #f3ead0; font-size: 14px; line-height: 1.45; }
+.rec b { color: var(--gold); letter-spacing: .06em; text-transform: uppercase; margin-right: 6px; }
+@media (max-width: 700px) { .rec { margin: 8px 12px 0; } }
+
 .pitch-foot {
   display: flex;
   align-items: center;
@@ -402,6 +407,8 @@ canvas {
     <div class="level-name" id="level-name">Fase de grupos y dieciseisavos</div>
   </div>
 </header>
+
+<div class="rec" id="rec" hidden><b>● Partida grabada</b> <span id="rec-t"></span></div>
 
 <main>
   <section class="pitch-wrap">
@@ -2058,17 +2065,21 @@ class Panel {
     const tag = $('mode-tag');
     tag.textContent = 'partida grabada';
     tag.className = 'tag tag-replay';
+    const when = meta && meta.played
+      ? new Date(meta.played * 1000).toLocaleDateString('es-ES',
+          { day: 'numeric', month: 'long', year: 'numeric' })
+      : null;
     const hint = document.querySelector('.hint');
     if (hint) {
-      const when = meta && meta.played
-        ? new Date(meta.played * 1000).toLocaleDateString('es-ES',
-            { day: 'numeric', month: 'long', year: 'numeric' })
-        : null;
-      hint.textContent = when
-        ? `Cada decisión es la que ${this.brain} tomó de verdad el ${when}. Espacio pausa, R vuelve a empezar.`
-        : `Cada decisión es la que ${this.brain} tomó de verdad. Espacio pausa, R vuelve a empezar.`;
+      hint.textContent = 'Espacio pausa, R vuelve a empezar.';
       hint.style.display = '';
     }
+    // el aviso grande: esto no es un modelo funcionando, pero sí lo que un modelo decidió en directo
+    const how = this.brain === 'jev' ? 'por API' : 'en una tarjeta gráfica de casa';
+    const on = when ? ' el ' + when : '';
+    $('rec-t').textContent = 'Cada decisión la tomó ' + this.brain + ' en directo' + on + ', ' + how
+      + ', con sus tiempos de respuesta reales. Aquí se reproduce tal cual: no hay ningún modelo funcionando.';
+    $('rec').hidden = false;
   }
 
   mode(source) {
