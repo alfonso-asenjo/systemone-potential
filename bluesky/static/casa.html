@@ -1983,7 +1983,7 @@ async function playRecording(url) {
   const day = new Date(rec.recorded_at * 1000).toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
   $("pill").classList.add("rec");
   $("pill-t").textContent = "GRABADO";
-  $("sub").textContent = `Bluesky, grabado el ${day} · leído por Laya`;
+  $("sub").textContent = "Bluesky grabado · leído por Laya";   // la fecha va en la nota: larga, pisaba los botes
   $("cred-posts").textContent = "Posts: Bluesky Jetstream, grabados sin su texto · sin llamadas a ninguna API";
   const last = rec.batches[rec.batches.length - 1][0];
   if (rec.hello && rec.hello.history) loadHistory(rec.hello.history);
