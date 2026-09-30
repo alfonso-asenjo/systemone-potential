@@ -1,0 +1,6 @@
+semilla 5010, hasta 12 min
+  62 s  se come a Uruguay (+200)
+  64 s  muere (Austria), nivel 1, 54 bolitas, 1520 puntos
+ 103 s  muere (Austria), nivel 1, 36 bolitas, 1700 puntos
+ 124 s  muere (Austria), nivel 1, 36 bolitas, 1700 puntos
+ 124 s  PIERDE: nivel 1, 1700 puntos, 0 vidas, 36 bolitas; 265 decisiones, 0 tarde, 0 errores, $0.2114

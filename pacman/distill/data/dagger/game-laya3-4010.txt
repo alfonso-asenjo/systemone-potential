@@ -1,0 +1,6 @@
+semilla 4010, hasta 12 min
+ 176 s  muere (Austria), nivel 1, 23 bolitas, 1630 puntos
+ 235 s  muere (Uruguay), nivel 1, 5 bolitas, 1810 puntos
+ 261 s  nivel 1 superado, 1860 puntos
+ 467 s  nivel 2 superado, 3720 puntos
+ 469 s  GANA: nivel 2, 3720 puntos, 1 vidas, 0 bolitas; 1016 decisiones, 0 tarde, 0 errores, $0.0000

@@ -1,0 +1,6 @@
+semilla 2015, hasta 12 min
+ 133 s  muere (Uruguay), nivel 1, 25 bolitas, 1610 puntos
+ 174 s  nivel 1 superado, 1860 puntos
+ 292 s  muere (Argentina), nivel 2, 15 bolitas, 3570 puntos
+ 373 s  nivel 2 superado, 3720 puntos
+ 375 s  GANA: nivel 2, 3720 puntos, 1 vidas, 0 bolitas; 808 decisiones, 3 tarde, 0 errores, $0.6972

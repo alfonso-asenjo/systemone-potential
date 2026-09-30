@@ -1,0 +1,7 @@
+semilla 1004, hasta 12 min
+  58 s  se come a Austria (+200)
+  62 s  muere (Austria), nivel 1, 59 bolitas, 1470 puntos
+ 173 s  muere (Uruguay), nivel 1, 4 bolitas, 2020 puntos
+ 199 s  nivel 1 superado, 2060 puntos
+ 283 s  muere (Bélgica), nivel 2, 46 bolitas, 3420 puntos
+ 283 s  PIERDE: nivel 2, 3420 puntos, 0 vidas, 46 bolitas; 611 decisiones, 0 tarde, 0 errores, $0.0000

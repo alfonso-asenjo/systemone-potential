@@ -1,0 +1,7 @@
+semilla 5005, hasta 12 min
+ 104 s  muere (Uruguay), nivel 1, 26 bolitas, 1600 puntos
+ 149 s  nivel 1 superado, 1860 puntos
+ 185 s  muere (Argentina), nivel 2, 109 bolitas, 2510 puntos
+ 254 s  se come a Argentina (+200)
+ 273 s  muere (Bélgica), nivel 2, 7 bolitas, 3850 puntos
+ 273 s  PIERDE: nivel 2, 3850 puntos, 0 vidas, 7 bolitas; 571 decisiones, 1 tarde, 1 errores, $0.1263

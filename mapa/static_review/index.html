@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Examen del mapa</title>
+<link rel="icon" href="data:,">
+<style>
+:root {
+  --bg: #f6f5f1; --card: #ffffff; --ink: #1d1f24; --ink-2: #5b606b; --ink-3: #8b909b; --rule: #e2e0da;
+  --ok: #1f7a4d; --ok-bg: #e4f3ea; --great: #b35c00; --great-bg: #fdf0df; --bad: #a3322a;
+  --focus: #2456d6;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 20px 16px 120px; }
+header { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+#progress { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+#frase { font-size: clamp(22px, 3.2vw, 34px); line-height: 1.2; margin: 14px 0 6px; font-weight: 650; }
+.help { color: var(--ink-2); margin: 0 0 16px; max-width: 70ch; }
+.tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 14px; }
+input[type=search] { font: inherit; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; min-width: min(340px, 100%); background: var(--card); }
+#results { display: grid; gap: 6px; margin-bottom: 14px; }
+#results button { text-align: left; }
+.list { display: grid; gap: 8px; }
+.c { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px; display: grid;
+     grid-template-columns: 1fr auto; gap: 4px 12px; cursor: pointer; }
+.c:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.c[data-s="1"] { border-color: var(--ok); background: var(--ok-bg); }
+.c[data-s="2"] { border-color: var(--great); background: var(--great-bg); }
+.c .n { font-weight: 650; }
+.c .meta { color: var(--ink-2); font-size: 14px; }
+.c .r { grid-column: 1 / -1; color: var(--ink); font-size: 15px; }
+.c .badge { font-size: 13px; font-weight: 600; align-self: start; }
+.c[data-s="1"] .badge { color: var(--ok); }
+.c[data-s="2"] .badge { color: var(--great); }
+.c[data-s="0"] .badge { color: var(--ink-3); }
+footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule); }
+footer .in { max-width: 980px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+button { font: inherit; border: 1px solid var(--rule); background: var(--card); color: var(--ink); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+button.warn { color: var(--bad); }
+#nota { flex: 1; min-width: 180px; font: inherit; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px; }
+#saved { color: var(--ink-2); font-size: 14px; }
+.dots { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 6px; }
+.dots a { width: 14px; height: 14px; border-radius: 3px; background: var(--rule); display: block; }
+.dots a.done { background: var(--ok); }
+.dots a.cur { outline: 2px solid var(--ink); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <strong>Examen del mapa</strong>
+    <span id="progress">…</span>
+  </header>
+  <div class="dots" id="dots"></div>
+  <h1 id="frase">Cargando…</h1>
+  <p class="help">Toca un municipio para marcarlo: una vez es <b>vale</b>, dos veces <b>muy buena</b>, tres lo desmarca.
+    Marca todos los que darías por buena respuesta. Si falta alguno, búscalo por su nombre.</p>
+  <div class="tools">
+    <input type="search" id="q" placeholder="Buscar otro municipio por nombre" aria-label="Buscar municipio">
+  </div>
+  <div id="results"></div>
+  <div class="list" id="list"></div>
+</main>
+<footer><div class="in">
+  <button id="prev" type="button">Anterior</button>
+  <button id="bad" type="button" class="warn" aria-pressed="false">Frase mala</button>
+  <input id="nota" placeholder="Nota (opcional)">
+  <span id="saved"></span>
+  <button id="next" type="button" class="primary">Guardar y siguiente</button>
+</div></footer>
+<script>
+const LABEL = ["sin marcar", "vale", "muy buena"];
+let total = 0, done = new Set(), cur = 0, data = null, marcas = {}, mala = false;
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n == null ? "?" : n.toLocaleString("es-ES");
+
+function cardHtml(c) {
+  const s = marcas[c.ine] || 0;
+  const where = c.reach === "island" ? "isla" : c.reach === "africa" ? "norte de África" : `${c.hours} h de Madrid`;
+  const coast = c.costero ? "costero" : `costa a ${c.coast_km} km`;
+  return `<div class="c" tabindex="0" role="button" data-ine="${c.ine}" data-s="${s}" aria-pressed="${s > 0}">
+    <div><span class="n">${c.name}</span> <span class="meta">${c.prov} · ${fmt(c.pop)} hab. · ${c.elev ?? "?"} m · ${where} · ${coast}</span></div>
+    <span class="badge">${LABEL[s]}</span>
+    <div class="r">${c.rasgos || "<i>sin rasgos destacados</i>"}</div></div>`;
+}
+function render() {
+  $("frase").textContent = data.frase;
+  $("list").innerHTML = data.candidatos.map(cardHtml).join("");
+  $("bad").setAttribute("aria-pressed", mala); $("bad").textContent = mala ? "Frase mala ✓" : "Frase mala";
+  $("progress").textContent = `Frase ${cur + 1} de ${total} · ${done.size} hechas`;
+  $("dots").innerHTML = Array.from({ length: total }, (_, i) =>
+    `<a href="#${i}" class="${done.has(i) ? "done" : ""} ${i === cur ? "cur" : ""}" aria-label="Frase ${i + 1}"></a>`).join("");
+}
+function cycle(el) {
+  const ine = el.dataset.ine;
+  marcas[ine] = ((marcas[ine] || 0) + 1) % 3;
+  const c = data.candidatos.find((x) => x.ine === ine);
+  el.outerHTML = cardHtml(c);
+  $("saved").textContent = "";
+}
+$("list").addEventListener("click", (e) => { const el = e.target.closest(".c"); if (el) cycle(el); });
+$("list").addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { const el = e.target.closest(".c"); if (el) { e.preventDefault(); cycle(el); } } });
+
+async function load(i) {
+  cur = Math.max(0, Math.min(total - 1, i));
+  data = await (await fetch(`/api/frase/${cur}`)).json();
+  marcas = { ...data.marcas }; mala = data.mala; $("nota").value = data.nota || "";
+  $("q").value = ""; $("results").innerHTML = ""; $("saved").textContent = "";
+  render(); scrollTo(0, 0);
+}
+async function save() {
+  const r = await fetch("/api/marcar", { method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ i: cur, marcas, mala, nota: $("nota").value }) });
+  if (r.ok) { done.add(cur); $("saved").textContent = "Guardado"; } else { $("saved").textContent = "No se ha podido guardar"; }
+}
+$("next").onclick = async () => { await save(); const nxt = [...Array(total).keys()].find((i) => i > cur && !done.has(i)); load(nxt ?? cur + 1); };
+$("prev").onclick = () => load(cur - 1);
+$("bad").onclick = () => { mala = !mala; render(); };
+let t;
+$("q").addEventListener("input", () => {
+  clearTimeout(t);
+  t = setTimeout(async () => {
+    const hits = await (await fetch(`/api/buscar?q=${encodeURIComponent($("q").value)}`)).json();
+    $("results").innerHTML = hits.map((h) => `<button type="button" data-ine="${h.ine}">${h.name} <span class="meta">(${h.prov}, ${fmt(h.pop)} hab.)</span></button>`).join("");
+    $("results").querySelectorAll("button").forEach((b) => b.onclick = () => {
+      const h = hits.find((x) => x.ine === b.dataset.ine);
+      if (!data.candidatos.some((c) => c.ine === h.ine)) data.candidatos.unshift(h);
+      marcas[h.ine] = Math.max(1, marcas[h.ine] || 0);
+      $("results").innerHTML = ""; $("q").value = ""; render();
+    });
+  }, 200);
+});
+addEventListener("hashchange", () => load(+location.hash.slice(1)));
+(async () => {
+  const s = await (await fetch("/api/state")).json();
+  total = s.total; done = new Set(s.done);
+  const first = location.hash ? +location.hash.slice(1) : ([...Array(total).keys()].find((i) => !done.has(i)) ?? 0);
+  load(first);
+})();
+</script>
+</body>
+</html>

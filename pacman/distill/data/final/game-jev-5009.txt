@@ -1,0 +1,11 @@
+semilla 5009, hasta 12 min
+  58 s  se come a Austria (+200)
+  59 s  se come a Arabia Saudí (+400)
+  59 s  se come a Uruguay (+800)
+ 202 s  muere (Uruguay), nivel 1, 11 bolitas, 3150 puntos
+ 212 s  nivel 1 superado, 3260 puntos
+ 312 s  se come a Bélgica (+200)
+ 312 s  se come a Francia (+400)
+ 360 s  muere (Argentina), nivel 2, 4 bolitas, 5680 puntos
+ 368 s  nivel 2 superado, 5720 puntos
+ 371 s  GANA: nivel 2, 5720 puntos, 1 vidas, 0 bolitas; 799 decisiones, 6 tarde, 0 errores, $0.2895

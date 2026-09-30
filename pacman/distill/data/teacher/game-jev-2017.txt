@@ -1,0 +1,8 @@
+semilla 2017, hasta 12 min
+  78 s  muere (Cabo Verde), nivel 1, 54 bolitas, 1240 puntos
+ 108 s  muere (Austria), nivel 1, 42 bolitas, 1360 puntos
+ 124 s  se come a Uruguay (+200)
+ 158 s  nivel 1 superado, 2060 puntos
+ 182 s  se come a Argentina (+200)
+ 188 s  muere (Portugal), nivel 2, 120 bolitas, 2800 puntos
+ 188 s  PIERDE: nivel 2, 2800 puntos, 0 vidas, 120 bolitas; 403 decisiones, 0 tarde, 0 errores, $0.7959

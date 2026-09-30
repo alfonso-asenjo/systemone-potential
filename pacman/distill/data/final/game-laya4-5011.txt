@@ -1,0 +1,7 @@
+semilla 5011, hasta 12 min
+  23 s  muere (Arabia Saudí), nivel 1, 133 bolitas, 410 puntos
+  83 s  se come a Arabia Saudí (+200)
+  91 s  muere (Cabo Verde), nivel 1, 36 bolitas, 1660 puntos
+ 161 s  nivel 1 superado, 2060 puntos
+ 256 s  muere (Argentina), nivel 2, 44 bolitas, 3440 puntos
+ 256 s  PIERDE: nivel 2, 3440 puntos, 0 vidas, 44 bolitas; 541 decisiones, 0 tarde, 0 errores, $0.0000

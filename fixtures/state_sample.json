@@ -1,0 +1,20 @@
+{
+  "game_time": "6:40",
+  "race": "protoss",
+  "enemy_race": "terran",
+  "resources": {"minerals": 412, "gas": 230, "supply": "58/70"},
+  "economy": {"workers": 34, "bases": [{"workers": 20, "ideal": 16}, {"workers": 12, "ideal": 16}], "expanding": false},
+  "structures": {"nexus": 2, "pylon": 6, "gateway": 1, "warpgate": 2, "cyberneticscore": 1, "assimilator": 3, "forge": 1},
+  "under_construction": {"roboticsfacility": 1},
+  "army": {"supply": 22, "units": {"stalker": 8, "zealot": 3}, "position": "home", "in_production": {"stalker": 1}},
+  "research": ["protoss ground weapons level 1"],
+  "enemy": {
+    "army_supply_visible": 14,
+    "units_visible": {"midmap": {"marine": 10, "marauder": 2}},
+    "structures_seen": {"commandcenter": 1, "barracks": 2, "supplydepot": 4, "refinery": 1},
+    "bases_known": 1,
+    "workers_seen": 9
+  },
+  "last_30s": {"our_units_lost": 0, "enemy_units_killed": 1, "structures_damaged": false},
+  "previous_decision": {"macro_focus": "workers", "army_stance": "defend", "threat": 1.0}
+}

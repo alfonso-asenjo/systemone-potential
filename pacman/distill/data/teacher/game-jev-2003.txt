@@ -1,0 +1,9 @@
+semilla 2003, hasta 12 min
+  28 s  se come a Uruguay (+200)
+  89 s  se come a Uruguay (+200)
+ 163 s  muere (Cabo Verde), nivel 1, 9 bolitas, 2170 puntos
+ 199 s  nivel 1 superado, 2260 puntos
+ 237 s  muere (Francia), nivel 2, 108 bolitas, 2920 puntos
+ 256 s  se come a Francia (+200)
+ 304 s  muere (Bélgica), nivel 2, 36 bolitas, 3960 puntos
+ 304 s  PIERDE: nivel 2, 3960 puntos, 0 vidas, 36 bolitas; 643 decisiones, 1 tarde, 1 errores, $0.3776

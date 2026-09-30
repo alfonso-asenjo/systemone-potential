@@ -1,0 +1,6 @@
+semilla 5008, hasta 12 min
+ 100 s  muere (Uruguay), nivel 1, 35 bolitas, 1470 puntos
+ 138 s  muere (Uruguay), nivel 1, 4 bolitas, 1820 puntos
+ 165 s  nivel 1 superado, 1860 puntos
+ 200 s  muere (Bélgica), nivel 2, 101 bolitas, 2630 puntos
+ 200 s  PIERDE: nivel 2, 2630 puntos, 0 vidas, 101 bolitas; 427 decisiones, 2 tarde, 0 errores, $0.2432

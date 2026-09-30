@@ -1,0 +1,7 @@
+semilla 2011, hasta 12 min
+ 102 s  muere (Uruguay), nivel 1, 39 bolitas, 1470 puntos
+ 162 s  nivel 1 superado, 1860 puntos
+ 211 s  muere (Francia), nivel 2, 101 bolitas, 2590 puntos
+ 231 s  se come a Francia (+200)
+ 328 s  nivel 2 superado, 3920 puntos
+ 331 s  GANA: nivel 2, 3920 puntos, 1 vidas, 0 bolitas; 710 decisiones, 0 tarde, 0 errores, $0.6925

@@ -1,0 +1,36 @@
+{
+ "train_posts": 1000,
+ "test_posts": 600,
+ "before": null,
+ "after_epoch_3": {
+  "emotion_agree": 0.608,
+  "topic_agree": 0.613,
+  "toxic_agree": 0.898,
+  "adult_agree": 0.965,
+  "surprise_share": 0.01,
+  "toxic_min": 0.122,
+  "toxic_recall": 0.943,
+  "toxic_false_alarm": 0.266,
+  "toxic_jev_positives": 88,
+  "adult_min": 0.0294,
+  "adult_recall": 0.913,
+  "adult_false_alarm": 0.286,
+  "adult_jev_positives": 23
+ },
+ "train_seconds": 88,
+ "after": {
+  "emotion_agree": 0.608,
+  "topic_agree": 0.613,
+  "toxic_agree": 0.898,
+  "adult_agree": 0.965,
+  "surprise_share": 0.01,
+  "toxic_min": 0.122,
+  "toxic_recall": 0.943,
+  "toxic_false_alarm": 0.266,
+  "toxic_jev_positives": 88,
+  "adult_min": 0.0294,
+  "adult_recall": 0.913,
+  "adult_false_alarm": 0.286,
+  "adult_jev_positives": 23
+ }
+}

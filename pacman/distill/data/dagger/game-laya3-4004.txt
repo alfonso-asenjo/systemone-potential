@@ -1,0 +1,10 @@
+semilla 4004, hasta 12 min
+  63 s  se come a Austria (+200)
+  63 s  se come a Uruguay (+400)
+  87 s  se come a Arabia Saudí (+200)
+  89 s  se come a Uruguay (+400)
+ 157 s  nivel 1 superado, 3060 puntos
+ 254 s  muere (Francia), nivel 2, 38 bolitas, 4500 puntos
+ 304 s  muere (Bélgica), nivel 2, 8 bolitas, 4840 puntos
+ 341 s  muere (Francia), nivel 2, 4 bolitas, 4880 puntos
+ 341 s  PIERDE: nivel 2, 4880 puntos, 0 vidas, 4 bolitas; 738 decisiones, 0 tarde, 0 errores, $0.0000

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Examen a ciegas</title>
+<link rel="icon" href="data:,">
+<style>
+:root { --bg: #f6f5f1; --card: #fff; --ink: #1d1f24; --ink-2: #5b606b; --rule: #e2e0da;
+        --yes: #1f7a4d; --yes-bg: #e4f3ea; --no: #a3322a; --no-bg: #f8e6e4; --focus: #2456d6; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 900px; margin: 0 auto; padding: 20px 16px 110px; }
+header { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+#progress { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+#frase { font-size: clamp(22px, 3.2vw, 32px); line-height: 1.2; margin: 14px 0 6px; font-weight: 650; }
+.help { color: var(--ink-2); margin: 0 0 16px; }
+.list { display: grid; gap: 8px; }
+.c { background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px;
+     display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: start; }
+.c[data-v="1"] { border-color: var(--yes); background: var(--yes-bg); }
+.c[data-v="0"] { border-color: var(--no); background: var(--no-bg); }
+.n { font-weight: 650; }
+.meta { color: var(--ink-2); font-size: 14px; }
+.r { grid-column: 1; font-size: 15px; }
+.btns { grid-row: 1 / span 2; grid-column: 2; display: flex; gap: 6px; }
+button { font: inherit; border: 1px solid var(--rule); background: var(--card); color: var(--ink); border-radius: 8px; padding: 10px 16px; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+button.si[aria-pressed="true"] { background: var(--yes); color: #fff; border-color: var(--yes); }
+button.no[aria-pressed="true"] { background: var(--no); color: #fff; border-color: var(--no); }
+footer { position: fixed; left: 0; right: 0; bottom: 0; background: var(--card); border-top: 1px solid var(--rule); }
+footer .in { max-width: 900px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 10px; align-items: center; }
+button.primary { background: var(--ink); color: #fff; border-color: var(--ink); margin-left: auto; }
+#msg { color: var(--ink-2); font-size: 14px; }
+@media (max-width: 560px) { .c { grid-template-columns: 1fr; } .btns { grid-row: auto; grid-column: 1; } .r { grid-column: 1; } }
+</style>
+</head>
+<body>
+<main>
+  <header><strong>Examen a ciegas</strong><span id="progress">…</span></header>
+  <h1 id="frase">Cargando…</h1>
+  <p class="help">¿Es una buena respuesta a esta búsqueda? Di sí o no a cada uno. No sabes quién lo ha propuesto, y es a propósito.</p>
+  <div class="list" id="list"></div>
+</main>
+<footer><div class="in">
+  <button id="prev" type="button">Anterior</button>
+  <span id="msg"></span>
+  <button id="next" type="button" class="primary">Guardar y siguiente</button>
+</div></footer>
+<script>
+let total = 0, done = new Set(), cur = 0, data = null, votos = {};
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n == null ? "?" : n.toLocaleString("es-ES");
+function html(c) {
+  const v = votos[c.ine];
+  const where = c.reach === "island" ? "isla" : c.reach === "africa" ? "norte de África" : `${c.hours} h de Madrid`;
+  const coast = c.costero ? "costero" : `costa a ${c.coast_km} km`;
+  return `<div class="c" data-ine="${c.ine}" data-v="${v ?? ""}">
+    <div><span class="n">${c.name}</span> <span class="meta">${c.prov} · ${fmt(c.pop)} hab. · ${c.elev ?? "?"} m · ${where} · ${coast}</span></div>
+    <div class="btns"><button type="button" class="si" aria-pressed="${v === 1}">Sí</button><button type="button" class="no" aria-pressed="${v === 0}">No</button></div>
+    <div class="r">${c.rasgos || "<i>sin rasgos destacados</i>"}</div></div>`;
+}
+function render() {
+  $("frase").textContent = data.frase;
+  $("list").innerHTML = data.items.map(html).join("");
+  const missing = data.items.filter((c) => votos[c.ine] === undefined).length;
+  $("msg").textContent = missing ? `Faltan ${missing}` : "Listo para guardar";
+  $("progress").textContent = `Frase ${cur + 1} de ${total} · ${done.size} hechas`;
+}
+$("list").addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  votos[b.closest(".c").dataset.ine] = b.classList.contains("si") ? 1 : 0;
+  render();
+});
+async function load(i) {
+  cur = Math.max(0, Math.min(total - 1, i));
+  data = await (await fetch(`/api/ciego/${cur}`)).json();
+  votos = { ...data.votos }; render(); scrollTo(0, 0);
+}
+$("next").onclick = async () => {
+  if (data.items.some((c) => votos[c.ine] === undefined)) { $("msg").textContent = "Contesta todos antes de seguir"; return; }
+  const r = await fetch("/api/ciego/marcar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ i: cur, votos }) });
+  if (!r.ok) { $("msg").textContent = "No se ha podido guardar"; return; }
+  done.add(cur);
+  const nxt = [...Array(total).keys()].find((i) => !done.has(i));
+  if (nxt === undefined) { $("frase").textContent = "¡Terminado! Gracias."; $("list").innerHTML = ""; $("msg").textContent = ""; return; }
+  load(nxt);
+};
+$("prev").onclick = () => load(cur - 1);
+(async () => {
+  const s = await (await fetch("/api/ciego/state")).json();
+  total = s.total; done = new Set(s.done);
+  load([...Array(total).keys()].find((i) => !done.has(i)) ?? 0);
+})();
+</script>
+</body>
+</html>

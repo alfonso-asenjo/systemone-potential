@@ -1,0 +1,10 @@
+semilla 5001, hasta 12 min
+ 103 s  muere (Austria), nivel 1, 35 bolitas, 1470 puntos
+ 117 s  se come a Uruguay (+200)
+ 139 s  muere (Arabia Saudí), nivel 1, 6 bolitas, 2000 puntos
+ 185 s  nivel 1 superado, 2060 puntos
+ 212 s  se come a Francia (+200)
+ 213 s  se come a Bélgica (+400)
+ 223 s  se come a Argentina (+200)
+ 352 s  muere (Portugal), nivel 2, 26 bolitas, 4460 puntos
+ 352 s  PIERDE: nivel 2, 4460 puntos, 0 vidas, 26 bolitas; 759 decisiones, 5 tarde, 0 errores, $0.0000

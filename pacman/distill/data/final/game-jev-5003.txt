@@ -1,0 +1,7 @@
+semilla 5003, hasta 12 min
+  88 s  se come a Uruguay (+200)
+ 112 s  muere (Arabia Saudí), nivel 1, 11 bolitas, 1950 puntos
+ 179 s  nivel 1 superado, 2060 puntos
+ 291 s  muere (Portugal), nivel 2, 12 bolitas, 3800 puntos
+ 336 s  nivel 2 superado, 3920 puntos
+ 338 s  GANA: nivel 2, 3920 puntos, 1 vidas, 0 bolitas; 708 decisiones, 0 tarde, 1 errores, $0.1442

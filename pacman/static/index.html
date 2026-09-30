@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Roja en el laberinto</title>
+<meta name="description" content="España recorre un laberinto perseguida por los ocho rivales del Mundial 2026. Quien decide cada movimiento es jev, un modelo de decisión de TypeSafe.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 2a14 14 0 1 0 12.1 21L16 16 28.1 9A14 14 0 0 0 16 2z' fill='%23c8102e'/%3E%3Cpath d='M2.6 12h26.8v8H2.6z' fill='%23f5b700' opacity='.95'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<header class="board">
+  <div class="board-team">
+    <img class="board-flag" src="flags/es.svg" data-flag="es" alt="">
+    <span class="board-name">España</span>
+    <span class="lives" id="lives" aria-label="Vidas"></span>
+  </div>
+
+  <div class="board-centre">
+    <div class="score" id="score">0</div>
+    <div class="result" id="result" hidden>
+      <img class="result-flag" id="result-flag" src="" alt="">
+      <div>
+        <div class="result-score" id="result-score"></div>
+        <div class="result-phase" id="result-phase"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board-level">
+    <div class="level-no" id="level-no">Nivel 1</div>
+    <div class="level-name" id="level-name">Fase de grupos y dieciseisavos</div>
+  </div>
+</header>
+
+<main>
+  <section class="pitch-wrap">
+    <canvas id="pitch" aria-label="Laberinto"></canvas>
+    <div class="pitch-foot">
+      <span id="mode-tag" class="tag tag-jev"><span data-brain>jev</span> al mando</span>
+      <span class="hint">Flechas o WASD para tomar el control, J para devolvérselo a <span data-brain>jev</span>, espacio pausa, R reinicia</span>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <section class="card">
+      <h2>Hacia dónde va España <span class="kind"><span data-brain>jev</span> · Choice</span></h2>
+      <div class="dirs" id="dirs"></div>
+      <p class="meta" id="dir-meta">Esperando la primera decisión de <span data-brain>jev</span>.</p>
+      <div class="turnback">
+        <span>Dar la vuelta <em>Noul</em></span><b id="back-v">–</b>
+        <div class="track"><div class="fill" id="back-bar"></div><i class="bar-mark"></i></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Peligro <span class="kind"><span data-brain>jev</span> · Score de 0 a 3</span></h2>
+      <div class="danger" id="danger"><i></i><i></i><i></i><i></i></div>
+      <p class="danger-label" id="danger-label">Sin lectura todavía</p>
+      <div class="nouls">
+        <div class="noul">
+          <span>A por el trofeo <em>Noul</em></span><b id="power-v">–</b>
+          <div class="track"><div class="fill" id="power-bar"></div></div>
+        </div>
+        <div class="noul">
+          <span>A cazar <em>Noul</em></span><b id="hunt-v">–</b>
+          <div class="track"><div class="fill" id="hunt-bar"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Rivales</h2>
+      <ul class="rivals" id="rivals"></ul>
+    </section>
+
+    <section class="card stats">
+      <div class="stat"><span>Latencia</span><b id="stat-lat">–</b></div>
+      <div class="stat"><span>Decisiones</span><b id="stat-calls">0</b></div>
+      <div class="stat"><span>Tarde al cruce</span><b id="stat-late">0</b></div>
+      <div class="stat"><span>Coste</span><b id="stat-cost">$0,0000</b></div>
+      <details>
+        <summary>Estado enviado a <span data-brain>jev</span></summary>
+        <pre id="state-json">Aún no se ha enviado ningún estado.</pre>
+      </details>
+    </section>
+  </aside>
+</main>
+
+<div class="curtain" id="curtain" hidden>
+  <div class="curtain-inner">
+    <h3 id="curtain-title"></h3>
+    <p id="curtain-text"></p>
+    <button id="curtain-btn" type="button">Jugar otra vez</button>
+  </div>
+</div>
+
+<script type="module" src="main.js"></script>
+</body>
+</html>

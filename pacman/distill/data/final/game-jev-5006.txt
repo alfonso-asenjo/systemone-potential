@@ -1,0 +1,7 @@
+semilla 5006, hasta 12 min
+  36 s  muere (Austria), nivel 1, 121 bolitas, 530 puntos
+  74 s  se come a Cabo Verde (+200)
+ 182 s  nivel 1 superado, 2060 puntos
+ 288 s  muere (Bélgica), nivel 2, 40 bolitas, 3480 puntos
+ 324 s  muere (Argentina), nivel 2, 13 bolitas, 3790 puntos
+ 324 s  PIERDE: nivel 2, 3790 puntos, 0 vidas, 13 bolitas; 700 decisiones, 0 tarde, 0 errores, $0.2819

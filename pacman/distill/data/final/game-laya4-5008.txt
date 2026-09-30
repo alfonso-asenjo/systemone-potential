@@ -1,0 +1,12 @@
+semilla 5008, hasta 12 min
+  93 s  muere (Uruguay), nivel 1, 42 bolitas, 1400 puntos
+ 118 s  se come a Cabo Verde (+200)
+ 198 s  nivel 1 superado, 2060 puntos
+ 259 s  se come a Francia (+200)
+ 262 s  se come a Argentina (+400)
+ 263 s  se come a Bélgica (+800)
+ 304 s  se come a Bélgica (+200)
+ 305 s  se come a Francia (+400)
+ 322 s  muere (Francia), nivel 2, 8 bolitas, 5840 puntos
+ 365 s  nivel 2 superado, 5920 puntos
+ 368 s  GANA: nivel 2, 5920 puntos, 1 vidas, 0 bolitas; 791 decisiones, 0 tarde, 0 errores, $0.0000

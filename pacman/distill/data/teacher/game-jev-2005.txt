@@ -1,0 +1,10 @@
+semilla 2005, hasta 12 min
+ 129 s  se come a Austria (+200)
+ 130 s  se come a Uruguay (+400)
+ 131 s  se come a Cabo Verde (+800)
+ 140 s  se come a Austria (+200)
+ 143 s  se come a Cabo Verde (+400)
+ 270 s  nivel 1 superado, 3860 puntos
+ 385 s  muere (Portugal), nivel 2, 32 bolitas, 5400 puntos
+ 426 s  nivel 2 superado, 5720 puntos
+ 429 s  GANA: nivel 2, 5720 puntos, 2 vidas, 0 bolitas; 929 decisiones, 2 tarde, 0 errores, $0.3957

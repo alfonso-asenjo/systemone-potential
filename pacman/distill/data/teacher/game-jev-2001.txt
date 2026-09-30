@@ -1,0 +1,10 @@
+semilla 2001, hasta 12 min
+  27 s  se come a Arabia Saudí (+200)
+  78 s  muere (Cabo Verde), nivel 1, 52 bolitas, 1500 puntos
+ 115 s  se come a Austria (+200)
+ 116 s  se come a Uruguay (+400)
+ 268 s  muere (Austria), nivel 1, 3 bolitas, 2630 puntos
+ 275 s  nivel 1 superado, 2660 puntos
+ 314 s  se come a Francia (+200)
+ 331 s  muere (Argentina), nivel 2, 71 bolitas, 3970 puntos
+ 331 s  PIERDE: nivel 2, 3970 puntos, 0 vidas, 71 bolitas; 696 decisiones, 2 tarde, 1 errores, $0.3858

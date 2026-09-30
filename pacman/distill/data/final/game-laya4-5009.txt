@@ -1,0 +1,6 @@
+semilla 5009, hasta 12 min
+ 116 s  muere (Uruguay), nivel 1, 24 bolitas, 1620 puntos
+ 153 s  muere (Uruguay), nivel 1, 6 bolitas, 1800 puntos
+ 217 s  nivel 1 superado, 1860 puntos
+ 265 s  muere (Francia), nivel 2, 99 bolitas, 2610 puntos
+ 265 s  PIERDE: nivel 2, 2610 puntos, 0 vidas, 99 bolitas; 572 decisiones, 0 tarde, 0 errores, $0.0000

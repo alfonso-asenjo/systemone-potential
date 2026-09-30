@@ -1,0 +1,8 @@
+semilla 4006, hasta 12 min
+  90 s  se come a Uruguay (+200)
+ 125 s  se come a Uruguay (+200)
+ 158 s  nivel 1 superado, 2260 puntos
+ 236 s  muere (Francia), nivel 2, 64 bolitas, 3440 puntos
+ 269 s  muere (Francia), nivel 2, 29 bolitas, 3830 puntos
+ 299 s  muere (Bélgica), nivel 2, 18 bolitas, 3940 puntos
+ 299 s  PIERDE: nivel 2, 3940 puntos, 0 vidas, 18 bolitas; 646 decisiones, 0 tarde, 0 errores, $0.0000

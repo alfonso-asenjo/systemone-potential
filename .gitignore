@@ -1,0 +1,70 @@
+# --- Secretos: nunca se suben (.env.example lleva los nombres, sin valores)
+.env
+
+# --- Entornos y cachés
+*.pyc
+__pycache__/
+.pytest_cache/
+.venv/
+.venv*/
+.deepeval/
+
+# --- Modelos (11 GB): se regeneran con los scripts de entrenamiento de cada demo
+models/
+
+# --- Registros de ejecución: llevan IPs de la red local y rutas del ordenador
+logs/
+mapa/logs/
+pacman/logs/
+**/logs-server*.txt
+**/server-log.txt
+**/train-log*.txt
+clm/embed-log.txt
+
+# --- Builds del comecocos (se generan con pacman/build.py y build_single.py)
+pacman/dist/
+pacman/dist-single/
+
+# --- Autojuego nocturno: 7 vueltas de modelos y partidas (6,8 GB); el resumen está en docs y memoria
+pacman/selfplay/
+
+# --- Datos del mapa de 8.131 municipios (313 MB: texto de Wikipedia, vectores, etiquetas del
+# profesor). La web usa lo que ya está en mapa/static_big/; los scripts big_*.py lo regeneran.
+mapa/data/
+
+# --- Bluesky: textos de posts de otras personas. Solo se suben los resultados (report, curve-*)
+# y la grabación de la casa (bluesky/static/grabacion.json, sin textos).
+bluesky/data/labels.jsonl
+bluesky/data/*.png
+bluesky/spike/*.jsonl
+bluesky/spike/review60.json
+
+# --- Respuestas de jev con las que se entrenó a Laya en el comecocos (pendiente de decidir si se publican)
+pacman/distill/data/train.jsonl
+pacman/distill/data/test.jsonl
+
+# --- Borradores y descartes
+docs/posts/
+bluesky/static/mundial.html
+
+# --- Pruebas sueltas de la destilación
+pacman/distill/data/report-smoke.json
+pacman/distill/data/debug-laya3-*.txt
+
+# --- Experimentos que no se publican de momento
+banco/
+tickets/
+pacman/verifier/
+pacman/distill/verifier_loop.py
+pacman/tests/lookahead.mjs
+pacman/tests/searchplay.mjs
+docs/banco-diario.md
+docs/automejora-diario.md
+
+# --- Documentos internos (planes, guion de la serie) y el autojuego, no se publican
+docs/serie-linkedin.md
+docs/plan-comecocos.md
+docs/plan-mapa-8000.md
+docs/prospeccion-jev-vs-clasificadores.md
+pacman/distill/selfplay_loop.py
+pacman/tests/selfplay.mjs

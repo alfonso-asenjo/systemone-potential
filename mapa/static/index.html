@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luces de España</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Luces de <em>España</em></h1>
+  <p>Escribe lo que buscas. jev enciende el mapa donde cree que está, mientras escribes.</p>
+</header>
+
+<main>
+  <div id="stage">
+    <svg id="land" aria-hidden="true"></svg>
+    <canvas id="lights"></canvas>
+    <div id="labels"></div>
+  </div>
+
+  <aside id="panel">
+    <div class="block">
+      <div class="kicker">Donde más brilla</div>
+      <ol id="top"></ol>
+      <p id="empty" hidden>Nada cumple lo que pides. Prueba a quitar algún límite.</p>
+    </div>
+    <div class="block">
+      <div class="kicker">Cuánto duda jev</div>
+      <div id="doubt"><span id="doubt-n">–</span><span id="doubt-text">Escribe algo para empezar.</span></div>
+      <div id="doubt-bar"><i></i></div>
+    </div>
+    <div class="block" id="rules-block" hidden>
+      <div class="kicker">Lo que filtra el código antes de preguntar</div>
+      <div id="rules"></div>
+    </div>
+    <div class="stats">
+      <span><b id="lat">–</b> latencia</span>
+      <span><b id="opts">255</b> lugares</span>
+      <span><b id="cost">$0</b> gastado</span>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <div id="ask">
+    <input id="q" type="text" autocomplete="off" spellcheck="false"
+           placeholder="pueblo tranquilo con playa y surf…" aria-label="Qué buscas">
+    <span id="status" aria-live="polite"></span>
+  </div>
+  <div id="chips"></div>
+</footer>
+
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script src="vendor/d3-composite-projections.min.js"></script>
+<script src="map.js"></script>
+</body>
+</html>

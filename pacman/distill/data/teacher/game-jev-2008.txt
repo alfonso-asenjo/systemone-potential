@@ -1,0 +1,8 @@
+semilla 2008, hasta 12 min
+ 109 s  se come a Uruguay (+200)
+ 200 s  nivel 1 superado, 2060 puntos
+ 255 s  muere (Bélgica), nivel 2, 90 bolitas, 2900 puntos
+ 315 s  se come a Bélgica (+200)
+ 335 s  muere (Bélgica), nivel 2, 7 bolitas, 4050 puntos
+ 374 s  muere (Francia), nivel 2, 6 bolitas, 4060 puntos
+ 374 s  PIERDE: nivel 2, 4060 puntos, 0 vidas, 6 bolitas; 810 decisiones, 1 tarde, 0 errores, $0.5581

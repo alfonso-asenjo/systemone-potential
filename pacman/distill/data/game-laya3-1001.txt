@@ -1,0 +1,12 @@
+semilla 1001, hasta 12 min
+  24 s  se come a Austria (+200)
+  25 s  se come a Uruguay (+400)
+  43 s  se come a Austria (+200)
+  49 s  se come a Uruguay (+400)
+  56 s  se come a Austria (+200)
+  58 s  se come a Uruguay (+400)
+ 141 s  muere (Austria), nivel 1, 7 bolitas, 3590 puntos
+ 167 s  nivel 1 superado, 3660 puntos
+ 265 s  muere (Francia), nivel 2, 47 bolitas, 5050 puntos
+ 410 s  muere (Francia), nivel 2, 1 bolitas, 5510 puntos
+ 410 s  PIERDE: nivel 2, 5510 puntos, 0 vidas, 1 bolitas; 890 decisiones, 0 tarde, 0 errores, $0.0000

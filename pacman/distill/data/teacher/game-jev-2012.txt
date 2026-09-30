@@ -1,0 +1,5 @@
+semilla 2012, hasta 12 min
+ 102 s  muere (Uruguay), nivel 1, 26 bolitas, 1600 puntos
+ 152 s  muere (Arabia Saudí), nivel 1, 11 bolitas, 1750 puntos
+ 187 s  muere (Arabia Saudí), nivel 1, 7 bolitas, 1790 puntos
+ 187 s  PIERDE: nivel 1, 1790 puntos, 0 vidas, 7 bolitas; 405 decisiones, 0 tarde, 0 errores, $0.6492

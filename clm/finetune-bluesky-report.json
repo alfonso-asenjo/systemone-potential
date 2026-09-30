@@ -1,0 +1,87 @@
+{
+ "antes": {
+  "emotion": 0.287,
+  "topic": 0.29
+ },
+ "epoca_1": {
+  "emotion": 0.545,
+  "topic": 0.498
+ },
+ "epoca_2": {
+  "emotion": 0.587,
+  "topic": 0.587
+ },
+ "epoca_3": {
+  "emotion": 0.598,
+  "topic": 0.632
+ },
+ "epoca_4": {
+  "emotion": 0.608,
+  "topic": 0.66
+ },
+ "epoca_5": {
+  "emotion": 0.618,
+  "topic": 0.672
+ },
+ "epoca_6": {
+  "emotion": 0.615,
+  "topic": 0.653
+ },
+ "epoca_7": {
+  "emotion": 0.625,
+  "topic": 0.685
+ },
+ "epoca_8": {
+  "emotion": 0.62,
+  "topic": 0.693
+ },
+ "epoca_9": {
+  "emotion": 0.63,
+  "topic": 0.698
+ },
+ "epoca_10": {
+  "emotion": 0.617,
+  "topic": 0.67
+ },
+ "epoca_11": {
+  "emotion": 0.637,
+  "topic": 0.677
+ },
+ "epoca_12": {
+  "emotion": 0.633,
+  "topic": 0.698
+ },
+ "epoca_13": {
+  "emotion": 0.625,
+  "topic": 0.71
+ },
+ "epoca_14": {
+  "emotion": 0.628,
+  "topic": 0.705
+ },
+ "epoca_15": {
+  "emotion": 0.628,
+  "topic": 0.705
+ },
+ "epoca_16": {
+  "emotion": 0.632,
+  "topic": 0.707
+ },
+ "epoca_17": {
+  "emotion": 0.642,
+  "topic": 0.695
+ },
+ "epoca_18": {
+  "emotion": 0.617,
+  "topic": 0.713
+ },
+ "epoca_19": {
+  "emotion": 0.632,
+  "topic": 0.695
+ },
+ "epoca_20": {
+  "emotion": 0.625,
+  "topic": 0.698
+ },
+ "segundos": 6
+}

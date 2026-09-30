@@ -1,0 +1,8 @@
+semilla 4009, hasta 12 min
+  27 s  se come a Uruguay (+200)
+  29 s  se come a Cabo Verde (+400)
+ 118 s  muere (Arabia Saudí), nivel 1, 21 bolitas, 2250 puntos
+ 229 s  muere (Cabo Verde), nivel 1, 3 bolitas, 2430 puntos
+ 235 s  nivel 1 superado, 2460 puntos
+ 323 s  muere (Bélgica), nivel 2, 37 bolitas, 3950 puntos
+ 323 s  PIERDE: nivel 2, 3950 puntos, 0 vidas, 37 bolitas; 699 decisiones, 0 tarde, 0 errores, $0.0000

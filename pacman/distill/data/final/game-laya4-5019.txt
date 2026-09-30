@@ -1,0 +1,7 @@
+semilla 5019, hasta 12 min
+  79 s  se come a Uruguay (+200)
+ 120 s  muere (Austria), nivel 1, 21 bolitas, 1850 puntos
+ 168 s  nivel 1 superado, 2060 puntos
+ 264 s  muere (Francia), nivel 2, 34 bolitas, 3540 puntos
+ 388 s  nivel 2 superado, 3920 puntos
+ 390 s  GANA: nivel 2, 3920 puntos, 1 vidas, 0 bolitas; 840 decisiones, 0 tarde, 0 errores, $0.0000

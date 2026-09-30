@@ -1,0 +1,6 @@
+semilla 2010, hasta 12 min
+ 150 s  muere (Austria), nivel 1, 8 bolitas, 1780 puntos
+ 186 s  nivel 1 superado, 1860 puntos
+ 354 s  muere (Argentina), nivel 2, 7 bolitas, 3650 puntos
+ 381 s  nivel 2 superado, 3720 puntos
+ 383 s  GANA: nivel 2, 3720 puntos, 1 vidas, 0 bolitas; 826 decisiones, 4 tarde, 0 errores, $0.5589

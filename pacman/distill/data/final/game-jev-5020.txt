@@ -1,0 +1,8 @@
+semilla 5020, hasta 12 min
+  27 s  se come a Cabo Verde (+200)
+  27 s  se come a Arabia Saudí (+400)
+ 152 s  muere (Arabia Saudí), nivel 1, 9 bolitas, 2330 puntos
+ 187 s  nivel 1 superado, 2460 puntos
+ 293 s  muere (Bélgica), nivel 2, 56 bolitas, 3720 puntos
+ 344 s  muere (Bélgica), nivel 2, 21 bolitas, 4070 puntos
+ 344 s  PIERDE: nivel 2, 4070 puntos, 0 vidas, 21 bolitas; 742 decisiones, 0 tarde, 0 errores, $0.5843

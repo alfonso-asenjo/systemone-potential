@@ -1,0 +1,8 @@
+semilla 1004, hasta 12 min
+  54 s  muere (Arabia Saudí), nivel 1, 90 bolitas, 880 puntos
+  74 s  se come a Austria (+200)
+ 188 s  nivel 1 superado, 2060 puntos
+ 271 s  se come a Bélgica (+200)
+ 327 s  muere (Bélgica), nivel 2, 23 bolitas, 3890 puntos
+ 412 s  nivel 2 superado, 4120 puntos
+ 414 s  GANA: nivel 2, 4120 puntos, 1 vidas, 0 bolitas; 892 decisiones, 2 tarde, 0 errores, $0.2312

@@ -1,0 +1,9 @@
+semilla 1003, hasta 12 min
+  24 s  se come a Uruguay (+200)
+  99 s  muere (Arabia Saudí), nivel 1, 44 bolitas, 1580 puntos
+ 149 s  muere (Arabia Saudí), nivel 1, 8 bolitas, 1980 puntos
+ 194 s  nivel 1 superado, 2060 puntos
+ 251 s  se come a Argentina (+200)
+ 289 s  se come a Bélgica (+200)
+ 378 s  muere (Bélgica), nivel 2, 11 bolitas, 4210 puntos
+ 378 s  PIERDE: nivel 2, 4210 puntos, 0 vidas, 11 bolitas; 816 decisiones, 2 tarde, 0 errores, $0.0000

@@ -1,0 +1,6 @@
+semilla 5012, hasta 12 min
+ 168 s  nivel 1 superado, 1860 puntos
+ 196 s  muere (Argentina), nivel 2, 122 bolitas, 2380 puntos
+ 353 s  muere (Portugal), nivel 2, 2 bolitas, 3700 puntos
+ 360 s  nivel 2 superado, 3720 puntos
+ 362 s  GANA: nivel 2, 3720 puntos, 1 vidas, 0 bolitas; 769 decisiones, 0 tarde, 0 errores, $0.0000

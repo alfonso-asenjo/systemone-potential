@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El humor de internet</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..700&display=swap" rel="stylesheet">
+<style>
+/* Paleta generada en OKLCH (L 0,66, C 0,19) y validada con el validador de dataviz en modo
+   oscuro sobre #15131F, en este orden de apilado de arriba abajo: alegría, cariño, tristeza,
+   sorpresa, miedo, enfado. La primera versión (mostaza, salmón, azul marino) pasaba la
+   validación pero parecía de 1990: el amarillo a ese brillo sale mostaza, así que la alegría
+   es naranja. Los posts sin emoción clara no se dibujan; se dice cuántos son. */
+:root {
+  --surface: #15131F;
+  --surface-2: #1E1B2B;
+  --ink: #F3F0FA;
+  --ink-2: #BDB6CE;
+  --ink-3: #857D99;
+  --rule: #2C283D;
+  --joy: #d37812;
+  --love: #e356a2;
+  --sadness: #0795fd;
+  --surprise: #12a7a7;
+  --fear: #a670f3;
+  --anger: #f0555b;
+  --gutter: clamp(16px, 4vw, 72px);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--surface); color: var(--ink); }
+body {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-optical-sizing: auto;
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+  height: 100vh;
+  gap: clamp(12px, 2vh, 28px);
+  padding: clamp(20px, 4vh, 56px) var(--gutter) clamp(16px, 3vh, 40px);
+}
+.num { font-variant-numeric: tabular-nums; }
+
+/* La frase principal: el titular se reescribe solo con lo que dice el último minuto. */
+#headline {
+  margin: 0;
+  max-width: 30ch;
+  font-size: clamp(30px, 3.7vw, 70px);
+  line-height: 1.02;
+  font-weight: 620;
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 96;
+  text-wrap: balance;
+}
+#headline .nw { white-space: nowrap; }
+#headline .swatch { display: inline-block; width: 0.42em; height: 0.42em; border-radius: 50%; vertical-align: 0.12em; margin: 0 0.12em; }
+#sub { margin: 0; color: var(--ink-2); font-size: clamp(15px, 1.25vw, 22px); max-width: 60ch; }
+
+/* Posts de ejemplo: pocos, legibles, sin autor. */
+#posts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; align-content: start; min-height: 0; overflow: hidden; }
+#posts li {
+  display: grid; grid-template-columns: auto 1fr; gap: 0 12px; align-items: baseline;
+  max-width: 80ch; font-size: clamp(15px, 1.2vw, 21px); line-height: 1.35;
+  opacity: 0; transition: opacity .35s ease;
+}
+#posts li.in { opacity: 1; }
+#posts li:nth-child(n+2) .txt { color: var(--ink-2); }
+#posts li .tag { font-size: 0.78em; color: var(--ink-2); white-space: nowrap; }
+#posts li .tag i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; }
+/* Una línea por post: con dos, la lista crecía y empujaba la leyenda del río encima de los temas. */
+#posts li .txt { color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* El río: los últimos cinco minutos, apilados por emoción. */
+.river-wrap { position: relative; min-height: 0; display: flex; flex-direction: column; }
+#river { width: 100%; flex: 1; min-height: 160px; display: block; }
+#tip {
+  position: absolute; pointer-events: none; background: var(--surface-2); border: 1px solid var(--rule);
+  border-radius: 8px; padding: 10px 12px; font-size: 14px; line-height: 1.5; color: var(--ink); display: none; min-width: 180px;
+}
+#tip b { font-weight: 600; }
+#tip .row { display: grid; grid-template-columns: 12px 1fr auto; gap: 8px; align-items: center; }
+#tip .row i { width: 10px; height: 10px; border-radius: 50%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 10px 0 0; padding: 0; list-style: none; color: var(--ink-2); font-size: 15px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: 0; }
+
+.bottom { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(20px, 4vw, 72px); align-items: end; }
+#topics { display: grid; gap: 6px; margin: 0; }
+#topics .t { display: grid; grid-template-columns: 9.5em 1fr 3.2em; align-items: center; gap: 10px; font-size: 15px; color: var(--ink-2); }
+#topics .bar { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+#topics .bar span { display: block; height: 100%; background: var(--ink-3); border-radius: 0 4px 4px 0; transition: width .6s ease; }
+#topics .v { text-align: right; color: var(--ink); }
+.caption { color: var(--ink-3); font-size: 14px; margin: 0 0 8px; }
+#neutral-note { margin: 6px 0 0; }
+
+/* La velocidad, contada como una frase. */
+#speed { margin: 0; font-size: clamp(18px, 1.7vw, 30px); line-height: 1.3; font-weight: 450; max-width: 40ch; }
+#speed strong { font-weight: 650; }
+footer { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--ink-3); font-size: 13px; border-top: 1px solid var(--rule); padding-top: 12px; }
+footer button {
+  font: inherit; color: var(--ink-2); background: none; border: 1px solid var(--rule); border-radius: 6px; padding: 4px 10px; cursor: pointer;
+}
+footer button:focus-visible, #river:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+#table { display: none; border-collapse: collapse; font-size: 15px; margin-top: 8px; }
+#table.on { display: table; }
+#table td, #table th { padding: 4px 14px 4px 0; text-align: left; font-weight: 400; color: var(--ink-2); }
+#table td.num { color: var(--ink); text-align: right; }
+#status { color: var(--ink-2); }
+
+@media (max-width: 760px) {
+  body { height: auto; grid-template-rows: none; }
+  #river { flex: none; height: 240px; }
+  .bottom { grid-template-columns: 1fr; }
+  #posts li:nth-child(n+3) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #posts li, #topics .bar span { transition: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="headline">Conectando con Bluesky…</h1>
+</header>
+<p id="sub">Cada punto que entra por la derecha es un post que alguien acaba de publicar en Bluesky, en cualquier idioma. Un modelo pequeño lee su emoción en tu ordenador, al momento.</p>
+
+<ul id="posts" aria-live="off"></ul>
+
+<div class="river-wrap">
+  <canvas id="river" tabindex="0" aria-label="Reparto de emociones de los posts de Bluesky en los últimos cinco minutos"></canvas>
+  <div id="tip" role="status"></div>
+  <ul class="legend" id="legend"></ul>
+  <p class="caption" id="neutral-note"></p>
+  <table id="table" aria-label="Emociones en el último minuto"><tbody></tbody></table>
+</div>
+
+<div class="bottom">
+  <div>
+    <p class="caption">De qué se habla en el último minuto</p>
+    <div id="topics"></div>
+  </div>
+  <p id="speed" class="num">Esperando los primeros posts…</p>
+</div>
+
+<footer>
+  <span id="status">Flujo público de Bluesky. Nunca se muestra quién escribe; solo aparece el texto de posts que el modelo ve limpios.</span>
+  <button id="toggle-table" type="button" aria-pressed="false">Ver como tabla</button>
+</footer>
+
+<script>
+const EMOTIONS = [ // de arriba abajo en el río; orden validado para daltonismo
+  ["joy", "alegría"], ["love", "cariño"], ["sadness", "tristeza"], ["surprise", "sorpresa"],
+  ["fear", "miedo"], ["anger", "enfado"],
+];
+const ALL = [...EMOTIONS, ["neutral", "sin emoción clara"]];  // se cuentan, no se dibujan
+const LABEL = Object.fromEntries(ALL);
+const TOPICS = { politics: "política", news: "noticias", tech: "tecnología", culture: "cultura",
+  sports: "deporte", daily_life: "vida diaria", humor: "humor", other: "otros" };
+const css = getComputedStyle(document.documentElement);
+const COLOR = Object.fromEntries(EMOTIONS.map(([k]) => [k, css.getPropertyValue("--" + k).trim()]));
+const pct = (x) => `${Math.round(x * 100)} %`;
+const nf = (x, d = 0) => x.toLocaleString("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d });
+
+// ---- estado del río: cubos de 3 s, cinco minutos ------------------------------------
+const BIN_S = 3, BINS = 100;
+const bins = [];            // {t0, counts:{emo:n}, total}
+let t0 = performance.now() / 1000;
+function currentBin(now) {
+  const idx = Math.floor((now - t0) / BIN_S);
+  while (bins.length === 0 || bins[bins.length - 1].idx < idx) {
+    const next = bins.length ? bins[bins.length - 1].idx + 1 : idx;
+    bins.push({ idx: next, counts: Object.fromEntries(ALL.map(([k]) => [k, 0])), total: 0, neutral: 0 });
+    if (bins.length > BINS + 2) bins.shift();
+  }
+  return bins[bins.length - 1];
+}
+
+// ---- partículas: cada post entra como un punto -----------------------------------
+const dots = [];
+const canvas = document.getElementById("river");
+const ctx = canvas.getContext("2d");
+let W = 0, H = 0, DPR = 1;
+function resize() {
+  DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const r = canvas.getBoundingClientRect();
+  W = r.width; H = r.height;
+  canvas.width = Math.round(W * DPR); canvas.height = Math.round(H * DPR);
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+new ResizeObserver(resize).observe(canvas); resize();
+
+// ---- orden del río: la emoción predominante abajo ----------------------------------
+// No vale cualquier orden: dos colores parecidos no pueden quedar juntos (daltonismo). Estos
+// son los 140 de 720 que pasan el validador de dataviz, de abajo arriba, con los índices de
+// EMOTIONS. Se elige el que más se parece al ranking del último minuto, y solo se cambia
+// cuando el ranking lleva un rato estable, para que el río no salte a cada tanda.
+const VALID_ORDERS = ["012345","012354","012534","012543","014325","014352","014523","014532","021435","021453","023541","025341","032145","032541","034125","034521","035214","035412","041235","041253","043521","045321","102345","102354","102534","102543","103254","103452","104325","104352","104523","104532","120345","120354","120435","120453","123045","123540","125304","125340","125403","125430","140235","140253","140325","140352","143025","143520","145203","145230","145302","145320","201435","201453","203541","210345","210354","210435","210453","214035","214530","230145","235401","235410","253014","253041","253401","253410","254103","254301","301254","301452","302145","302541","304125","304521","320145","321045","325401","325410","340125","341025","345201","345210","352014","352041","352104","352140","354012","354021","354102","354120","401235","401253","403521","410235","410253","410325","410352","412035","412530","430125","435201","435210","452103","452301","453012","453021","453201","453210","520143","520341","521034","521043","521403","521430","523014","523041","523401","523410","530214","530412","532014","532041","532104","532140","534012","534021","534102","534120","540123","540321","541023","541032","541203","541230","543012","543021","543201","543210"]
+  .map((o) => [...o].map((c) => EMOTIONS[+c][0]));
+let order = VALID_ORDERS.find((o) => o[0] === "joy");   // de abajo arriba
+let wanted = null, wantedSince = 0;
+const ORDER_HOLD_S = 20;
+function pickOrder(shares, now) {
+  const rank = EMOTIONS.map(([k]) => k).sort((a, b) => (shares[b] || 0) - (shares[a] || 0));
+  let best = order, bestScore = Infinity;
+  for (const o of VALID_ORDERS) {
+    let score = 0;
+    o.forEach((k, i) => { score += (6 - i) ** 2 * Math.abs(rank.indexOf(k) - i); });
+    if (score < bestScore) { bestScore = score; best = o; }
+  }
+  if (best.join() === order.join()) { wanted = null; return; }
+  if (!wanted || wanted.join() !== best.join()) { wanted = best; wantedSince = now; return; }
+  if (now - wantedSince >= ORDER_HOLD_S) { order = best; wanted = null; }
+}
+
+// Geometría del río: cada columna reparte el 100 % de la altura entre emociones, porque lo
+// que cuenta es el ánimo, no el volumen (medido en la primera versión: con altura = número
+// de posts el río salía fino y plano, el ritmo de Bluesky apenas cambia).
+// Cada columna se suaviza con sus vecinas (1-2-1) y los bordes se dibujan con curvas: con
+// cubos de 3 s el reparto salta mucho de uno a otro y la versión con rectas parecía de dientes.
+// El cubo que se está llenando se mezcla con el anterior según lo que lleva de tiempo: con
+// pocos posts sus proporciones saltaban y dibujaban un pico en el borde derecho.
+function sharesOf(b, prev, fill) {
+  const w = prev ? Math.max(0, 1 - fill) : 0;
+  const total = b.total + (prev ? prev.total * w : 0);
+  const out = {};
+  for (const [k] of EMOTIONS) out[k] = total ? (b.counts[k] + (prev ? prev.counts[k] * w : 0)) / total : 1 / EMOTIONS.length;
+  return out;
+}
+function smoothed(raw) {
+  return raw.map((s, i) => {
+    const a = raw[i - 1] || s, c = raw[i + 1] || s, out = {};
+    for (const [k] of EMOTIONS) out[k] = (a[k] + 2 * s[k] + c[k]) / 4;
+    return out;
+  });
+}
+const AXIS_H = 24;               // franja al pie del río para las horas
+// Posiciones en proporción (0 = fondo, 1 = techo), no en píxeles: se suavizan de un fotograma
+// a otro y, en píxeles, se quedaban con la altura vieja cuando el lienzo cambiaba de tamaño
+// (medido: el río tapaba la franja de las horas).
+function stack(sh) {
+  let v = 0;                     // de abajo arriba: la primera del orden va al fondo
+  const out = {};
+  for (const k of order) { out[k] = [v, v + sh[k]]; v += sh[k]; }
+  return out;
+}
+const toY = (v) => (H - AXIS_H) - v * (H - AXIS_H - 4);
+function toPixels(n) {
+  const out = {};
+  for (const k in n) out[k] = [toY(n[k][1]), toY(n[k][0])];   // [arriba, abajo] en píxeles
+  return out;
+}
+// Catmull-Rom convertida a Bézier: pasa por todos los puntos, sin picos.
+function curveThrough(xs, ys, reverse) {
+  const idx = [...Array(xs.length).keys()];
+  if (reverse) idx.reverse();
+  const P = idx.map((i) => [xs[i], ys[i]]);
+  if (!reverse) ctx.moveTo(P[0][0], P[0][1]); else ctx.lineTo(P[0][0], P[0][1]);
+  for (let i = 0; i < P.length - 1; i++) {
+    const p0 = P[i - 1] || P[i], p1 = P[i], p2 = P[i + 1], p3 = P[i + 2] || p2;
+    ctx.bezierCurveTo(p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6,
+                      p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6, p2[0], p2[1]);
+  }
+}
+
+// Cada columna guarda dónde se dibujó y se desliza hacia su sitio nuevo en vez de saltar.
+// Medido a ojo en la versión anterior: los tramos nuevos aparecían de golpe, porque el cubo
+// en curso cambia con cada tanda (10 por segundo) y el suavizado 1-2-1 de una columna cambia
+// cuando nace su vecina. Una columna nueva empieza donde estaba la anterior. Así también se
+// animan los cambios de orden de las capas.
+const shown = new Map();           // idx del cubo -> {emo: [y0, y1]}
+const EASE_S = 0.5;
+function eased(bs, targets, dt) {
+  const a = 1 - Math.exp(-dt / EASE_S);
+  const out = targets.map((t, i) => {
+    const idx = bs[i].idx;
+    let d = shown.get(idx);
+    if (!d) {
+      const prev = shown.get(idx - 1) || t;
+      d = Object.fromEntries(Object.entries(prev).map(([k, v]) => [k, [...v]]));
+      shown.set(idx, d);
+    }
+    for (const k in t) { d[k][0] += (t[k][0] - d[k][0]) * a; d[k][1] += (t[k][1] - d[k][1]) * a; }
+    return d;
+  });
+  const oldest = bs.length ? bs[0].idx : 0;
+  for (const idx of shown.keys()) if (idx < oldest) shown.delete(idx);
+  return out;
+}
+
+// Líneas de tiempo cada 15 s con la hora del reloj, para ver cuánto ha pasado.
+// Un instante que ocurrió hace s segundos está en x = W - s / BIN_S * ancho de columna.
+const MARK_S = 15;
+const clock = new Intl.DateTimeFormat("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+function timeMarks(colW) {
+  const nowWall = Date.now() / 1000;
+  const surface = css.getPropertyValue("--surface").trim();
+  ctx.font = `400 12px "Bricolage Grotesque", system-ui`;
+  ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+  for (let m = Math.floor(nowWall / MARK_S) * MARK_S; ; m -= MARK_S) {
+    const x = W - ((nowWall - m) / BIN_S) * colW;
+    if (x < 0) break;
+    const firstX = W - (bins.length - 1) * colW;       // no marcar donde aún no hay río
+    if (x < firstX) break;
+    ctx.globalAlpha = 0.55; ctx.fillStyle = surface;
+    ctx.fillRect(Math.round(x), 0, 1, H - AXIS_H);
+    ctx.globalAlpha = 1; ctx.fillStyle = css.getPropertyValue("--ink-3").trim();
+    ctx.fillRect(Math.round(x), H - AXIS_H, 1, 4);
+    if (x > 30 && x < W - 30) ctx.fillText(clock.format(new Date(m * 1000)), x, H - 2);
+  }
+}
+
+const EMOJI = { joy: "😄", love: "🥰", sadness: "😢", surprise: "😮", fear: "😨", anger: "😠" };
+const DOT_R = 13;
+const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+let lastOrderCheck = 0, lastFrame = performance.now() / 1000;
+function draw() {
+  const now = performance.now() / 1000;
+  // Tiempo real, no por fotograma: medido en el navegador de pruebas, que dibuja a pocos
+  // fotogramas por segundo, las pelotitas vivían muchísimo más y se amontonaban en el borde.
+  const dt = Math.min(0.1, now - lastFrame); lastFrame = now;
+  currentBin(now);
+  const frac = ((now - t0) / BIN_S) % 1;
+  const colW = W / (BINS - 1);
+  ctx.clearRect(0, 0, W, H);
+  const surface = css.getPropertyValue("--surface").trim();
+
+  const raw = bins.map((b, i) => (i === bins.length - 1 ? sharesOf(b, bins[i - 1], frac) : sharesOf(b)));
+  const sh = smoothed(raw);
+  if (now - lastOrderCheck > 1 && sh.length) {
+    lastOrderCheck = now;
+    const recent = sh.slice(-20), avg = {};   // último minuto
+    for (const [k] of EMOTIONS) avg[k] = recent.reduce((a, s) => a + s[k], 0) / recent.length;
+    pickOrder(avg, now);
+  }
+  const xs = bins.map((b, i) => W - (bins.length - 1 - i + frac) * colW);
+  const st = eased(bins, sh.map(stack), dt).map(toPixels);
+  if (xs.length > 1) {
+    for (const k of order) {
+      ctx.beginPath();
+      curveThrough(xs, st.map((s) => s[k][0]), false);
+      curveThrough(xs, st.map((s) => s[k][1]), true);
+      ctx.closePath();
+      ctx.fillStyle = COLOR[k]; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = surface; ctx.stroke();   // 2 px entre capas
+    }
+  }
+
+  timeMarks(colW);
+
+  // etiquetas directas cerca del borde derecho, solo para las capas con sitio
+  const li = Math.max(0, st.length - 24);   // fuera de la zona donde llegan las pelotitas
+  if (st[li]) {
+    ctx.font = `500 15px "Bricolage Grotesque", system-ui`;
+    ctx.textAlign = "right"; ctx.textBaseline = "middle"; ctx.fillStyle = css.getPropertyValue("--ink").trim();
+    for (const [k, name] of EMOTIONS) {
+      const [a, b] = st[li][k];
+      if (b - a > 20) ctx.fillText(name, xs[li] - 8, (a + b) / 2);
+    }
+  }
+
+  // pelotitas: cada post entra por la derecha con su emoticono y se funde con su franja
+  const tail = st[st.length - 1];
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.font = `${Math.round(DOT_R * 1.25)}px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif`;
+  for (let i = dots.length - 1; i >= 0; i--) {
+    const d = dots[i];
+    d.t += dt;
+    const tt = Math.min(1, d.t / d.life);
+    const s = tail ? tail[d.emo] : [H / 2, H / 2];
+    const ty = (s[0] + s[1]) / 2 + d.jitter * Math.max(0, (s[1] - s[0]) / 2 - DOT_R);
+    const x = W + DOT_R - tt * (colW * 18);
+    const y = d.y0 + (ty - d.y0) * (1 - Math.pow(1 - tt, 3));
+    ctx.globalAlpha = tt < 0.75 ? 1 : 1 - (tt - 0.75) / 0.25;
+    ctx.beginPath(); ctx.arc(x, y, DOT_R, 0, Math.PI * 2);
+    ctx.fillStyle = COLOR[d.emo]; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = surface; ctx.stroke();
+    ctx.fillText(EMOJI[d.emo], x, y + 1);
+    ctx.globalAlpha = 1;
+    if (tt >= 1) dots.splice(i, 1);
+  }
+  if (!reduced) requestAnimationFrame(draw);
+}
+if (reduced) setInterval(draw, 1000); else requestAnimationFrame(draw);
+
+// ---- información al pasar el ratón: qué había en ese momento ------------------------
+const tip = document.getElementById("tip");
+function showTip(x) {
+  const now = performance.now() / 1000;
+  const frac = ((now - t0) / BIN_S) % 1;
+  const colW = W / (BINS - 1);
+  const i = Math.round(bins.length - 1 - (W - x) / colW - frac);
+  const b = bins[Math.max(0, Math.min(bins.length - 1, i))];
+  if (!b || !b.total) { tip.style.display = "none"; return; }
+  const ago = Math.round((bins[bins.length - 1].idx - b.idx) * BIN_S);
+  tip.innerHTML = `<b>${ago < 3 ? "Ahora" : `Hace ${ago} s`}</b>: ${b.total} posts con emoción, ${b.neutral} sin ella` +
+    EMOTIONS.map(([k, n]) => `<div class="row"><i style="background:${COLOR[k]}"></i><span>${n}</span><span class="num">${pct(b.counts[k] / b.total)}</span></div>`).join("");
+  tip.style.display = "block";
+  tip.style.left = `${Math.min(x + 14, W - tip.offsetWidth - 4)}px`;
+  tip.style.top = "8px";
+}
+canvas.addEventListener("pointermove", (e) => showTip(e.offsetX));
+canvas.addEventListener("pointerleave", () => (tip.style.display = "none"));
+canvas.addEventListener("focus", () => showTip(W - 10));
+canvas.addEventListener("blur", () => (tip.style.display = "none"));
+
+document.getElementById("legend").innerHTML =
+  EMOTIONS.map(([k, n]) => `<li><i style="background:${COLOR[k]}"></i>${EMOJI[k]} ${n}</li>`).join("");
+
+// ---- tabla accesible, alternativa al color ---------------------------------------
+const btn = document.getElementById("toggle-table"), table = document.getElementById("table");
+btn.addEventListener("click", () => {
+  const on = table.classList.toggle("on");
+  btn.setAttribute("aria-pressed", on);
+  btn.textContent = on ? "Ocultar tabla" : "Ver como tabla";
+});
+
+// ---- posts de ejemplo: uno nuevo cada pocos segundos, solo emociones claras ------------
+const postsEl = document.getElementById("posts");
+const MAX_POSTS = 3;
+let candidates = [], lastShown = 0;
+function showPost(now) {
+  if (now - lastShown < 2.6 || !candidates.length) return;
+  lastShown = now;
+  const p = candidates.pop(); candidates = [];
+  const li = document.createElement("li");
+  li.innerHTML = `<span class="tag"><i style="background:${COLOR[p.emotion]}"></i>${LABEL[p.emotion]}</span><span class="txt"></span>`;
+  li.querySelector(".txt").textContent = p.text;
+  postsEl.prepend(li);
+  requestAnimationFrame(() => li.classList.add("in"));
+  while (postsEl.children.length > MAX_POSTS) postsEl.lastElementChild.remove();
+}
+
+// ---- textos: titular, temas, velocidad ------------------------------------------
+function headline(st) {
+  const emo = 1 - (st.emotions.neutral || 0);   // misma base que el río: los posts con emoción
+  const e = Object.entries(st.emotions).filter(([k]) => k !== "neutral")
+    .map(([k, v]) => [k, emo ? v / emo : 0]).sort((a, b) => b[1] - a[1]);
+  if (!e.length || !e[0][1]) return;
+  const [[k1, v1], [k2, v2]] = e;
+  const sw = (k) => `<span class="swatch" style="background:${COLOR[k]}"></span>`;
+  document.getElementById("headline").innerHTML =
+    `En el último minuto, internet siente sobre todo <span class="nw">${sw(k1)}${LABEL[k1]} (${pct(v1)})</span> y <span class="nw">${sw(k2)}${LABEL[k2]} (${pct(v2)})</span>.`;
+}
+function topics(st) {
+  const rows = Object.entries(st.topics).sort((a, b) => b[1] - a[1]);
+  const max = Math.max(...rows.map((r) => r[1]), 0.01);
+  document.getElementById("topics").innerHTML = rows.map(([k, v]) =>
+    `<div class="t"><span>${TOPICS[k]}</span><span class="bar"><span style="width:${(v / max) * 100}%"></span></span><span class="v num">${pct(v)}</span></div>`).join("");
+}
+function speed(st) {
+  document.getElementById("speed").innerHTML =
+    `Una tarjeta gráfica de casa lee <strong>${nf(st.posts_per_s)} posts por segundo</strong>, ` +
+    `a <strong>${nf(st.ms_per_decision, 1)} ms por decisión</strong>. ` +
+    `Lleva ${nf(st.classified)} posts por 0 €; con jev habrían sido ${nf(st.jev_cost_usd, 2)} $.`;
+  const emo = 1 - (st.emotions.neutral || 0);
+  table.querySelector("tbody").innerHTML = EMOTIONS.map(([k, n]) =>
+    `<tr><th scope="row">${n}</th><td class="num">${pct(emo ? (st.emotions[k] || 0) / emo : 0)}</td></tr>`).join("");
+  document.getElementById("neutral-note").textContent =
+    `Reparto entre los posts con emoción. El ${pct(st.emotions.neutral || 0)} no expresa ninguna clara y no se dibuja.`;
+}
+
+// El servidor guarda los últimos cinco minutos: el río sale lleno desde el primer instante.
+function loadHistory(h) {
+  if (!h || !h.bins.length) return;
+  const now = performance.now() / 1000;
+  const clientIdx = Math.floor((now - t0) / BIN_S);
+  const offset = clientIdx - h.now_bin;
+  bins.length = 0;
+  for (const [idx, counts] of h.bins) {
+    const c = Object.fromEntries(ALL.map(([k]) => [k, counts[k] || 0]));
+    const total = EMOTIONS.reduce((a, [k]) => a + c[k], 0);
+    bins.push({ idx: idx + offset, counts: c, total, neutral: c.neutral });
+  }
+  bins.sort((a, b) => a.idx - b.idx);
+}
+
+// ---- conexión ---------------------------------------------------------------------
+function connect() {
+  const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+  ws.onmessage = (ev) => {
+    const m = JSON.parse(ev.data);
+    if (m.type === "hello") { loadHistory(m.history); if (m.stats.classified) { headline(m.stats); topics(m.stats); speed(m.stats); } return; }
+    if (m.type !== "batch") return;
+    const now = performance.now() / 1000;
+    const bin = currentBin(now);
+    for (const p of m.posts) {
+      bin.counts[p.emotion] = (bin.counts[p.emotion] || 0) + 1;
+      if (p.emotion === "neutral") { bin.neutral++; continue; }
+      bin.total++;
+      // Pelotitas grandes: una de cada tres basta para que se vea el ritmo sin tapar el río.
+      if (dots.length < 60 && Math.random() < 0.33) dots.push({ emo: p.emotion, t: 0, life: 2.2 + Math.random() * 0.8,
+        y0: Math.random() * H, jitter: Math.random() * 2 - 1 });
+      if (p.text && p.emotion !== "neutral" && p.emotion_p >= 0.6) candidates.push(p);
+    }
+    showPost(now);
+    headline(m.stats); topics(m.stats); speed(m.stats);
+  };
+  ws.onclose = () => {
+    document.getElementById("speed").textContent = "Se ha cortado la conexión con el servidor. Reintentando…";
+    setTimeout(connect, 2000);
+  };
+}
+connect();
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+semilla 5013, hasta 12 min
+  27 s  muere (Arabia Saudí), nivel 1, 120 bolitas, 540 puntos
+ 184 s  nivel 1 superado, 1860 puntos
+ 232 s  muere (Argentina), nivel 2, 108 bolitas, 2520 puntos
+ 400 s  muere (Francia), nivel 2, 6 bolitas, 3660 puntos
+ 400 s  PIERDE: nivel 2, 3660 puntos, 0 vidas, 6 bolitas; 869 decisiones, 1 tarde, 0 errores, $0.4258

@@ -1,0 +1,10 @@
+﻿receta;modelos;como_funciona;coste_concurso_100_frases_usd;coste_5003_frases_usd_con_lotes;notas
+R1 · luna tal cual;gpt-6-luna;"Lo que usamos hoy: una llamada sin razonar; elige hasta 15 de los 50 candidatos con nota de 1 a 3";0,05;1,29;Referencia: ya pagado (2,57 $ las 5.003 frases)
+R2 · luna x3 barajado;gpt-6-luna;"Tres llamadas con los candidatos en distinto orden y algo de razonamiento; se promedian las notas";0,21;5,30;Quita el sesgo de preferir los primeros de la lista
+R3 · gpt-5.6-luna;gpt-5.6-luna;Una llamada, otro modelo barato de la misma casa;0,11;2,63;
+R4 · voto de baratos;R2 + R3;"Media de R2 y R3; en el concurso sale de sus resultados, sin gastar más";0,00;7,92;Dos modelos distintos se equivocan en sitios distintos
+R5 · Claude Haiku 4.5;claude-haiku-4.5;Una llamada;0,51;12,85;Hace falta clave de Anthropic u OpenRouter
+R6 · gpt-6-sol;gpt-6-sol;Una llamada con razonamiento: el profesor caro de referencia;1,41;35,31;"Techo esperado; el de los ~50 $"
+R7 · Claude Sonnet 5;claude-sonnet-5;Una llamada: la otra referencia cara;1,41;35,31;Hace falta clave de Anthropic u OpenRouter
+R8 · cascada;R4 + R6 solo en dudas;"Los baratos etiquetan todo; el caro solo repasa las frases donde R2 y R3 discrepan (~20 %)";0,00;14,99;En el concurso sale de los resultados anteriores, sin gastar más
+TOTAL concurso;;Las 8 recetas sobre las mismas 100 frases (R4 y R8 salen de las demás);3,70;;Más el juez automático de apoyo, ~0,02 $

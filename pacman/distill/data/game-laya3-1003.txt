@@ -1,0 +1,7 @@
+semilla 1003, hasta 12 min
+  29 s  se come a Cabo Verde (+200)
+  45 s  se come a Uruguay (+200)
+  73 s  muere (Cabo Verde), nivel 1, 47 bolitas, 1750 puntos
+ 104 s  muere (Austria), nivel 1, 40 bolitas, 1820 puntos
+ 150 s  muere (Austria), nivel 1, 33 bolitas, 1890 puntos
+ 150 s  PIERDE: nivel 1, 1890 puntos, 0 vidas, 33 bolitas; 323 decisiones, 0 tarde, 0 errores, $0.0000

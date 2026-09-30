@@ -1,0 +1,10 @@
+semilla 2020, hasta 12 min
+  30 s  se come a Cabo Verde (+200)
+  30 s  se come a Arabia Saudí (+400)
+  49 s  se come a Uruguay (+200)
+  59 s  se come a Austria (+200)
+  83 s  muere (Austria), nivel 1, 41 bolitas, 2450 puntos
+ 149 s  muere (Arabia Saudí), nivel 1, 4 bolitas, 2820 puntos
+ 178 s  nivel 1 superado, 2860 puntos
+ 348 s  nivel 2 superado, 4720 puntos
+ 350 s  GANA: nivel 2, 4720 puntos, 1 vidas, 0 bolitas; 754 decisiones, 0 tarde, 0 errores, $0.8552

@@ -1,0 +1,6 @@
+semilla 5016, hasta 12 min
+  26 s  se come a Uruguay (+200)
+  51 s  muere (Austria), nivel 1, 97 bolitas, 1010 puntos
+  96 s  muere (Arabia Saudí), nivel 1, 39 bolitas, 1630 puntos
+ 167 s  muere (Arabia Saudí), nivel 1, 4 bolitas, 2020 puntos
+ 167 s  PIERDE: nivel 1, 2020 puntos, 0 vidas, 4 bolitas; 361 decisiones, 1 tarde, 0 errores, $0.5147

@@ -1,0 +1,7 @@
+semilla 2007, hasta 12 min
+  52 s  se come a Austria (+200)
+ 147 s  muere (Austria), nivel 1, 7 bolitas, 1990 puntos
+ 186 s  nivel 1 superado, 2060 puntos
+ 225 s  muere (Portugal), nivel 2, 96 bolitas, 2880 puntos
+ 321 s  muere (Francia), nivel 2, 9 bolitas, 3830 puntos
+ 321 s  PIERDE: nivel 2, 3830 puntos, 0 vidas, 9 bolitas; 695 decisiones, 2 tarde, 0 errores, $0.5474

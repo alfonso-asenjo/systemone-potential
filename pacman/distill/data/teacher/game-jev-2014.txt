@@ -1,0 +1,6 @@
+semilla 2014, hasta 12 min
+  53 s  muere (Arabia Saudí), nivel 1, 102 bolitas, 760 puntos
+  79 s  muere (Austria), nivel 1, 82 bolitas, 960 puntos
+ 151 s  nivel 1 superado, 1860 puntos
+ 313 s  muere (Bélgica), nivel 2, 3 bolitas, 3690 puntos
+ 313 s  PIERDE: nivel 2, 3690 puntos, 0 vidas, 3 bolitas; 676 decisiones, 1 tarde, 0 errores, $0.6891

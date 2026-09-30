@@ -1,0 +1,41 @@
+{
+ "acierto@10 (juez gpt-6-luna)": {
+  "clm_sin_afinar": 0.05,
+  "clm_afinado": 0.29,
+  "palabras": 0.368,
+  "palabras+reordenador": 0.614,
+  "clm+reordenador": 0.518,
+  "palabras+clm+reordenador": 0.628
+ },
+ "clm_afinado - palabras": {
+  "diferencia": -0.078,
+  "ic95": [
+   -0.192,
+   0.036
+  ],
+  "gana": 21,
+  "empata": 4,
+  "pierde": 25
+ },
+ "clm+reordenador - palabras+reordenador": {
+  "diferencia": -0.096,
+  "ic95": [
+   -0.166,
+   -0.028
+  ],
+  "gana": 11,
+  "empata": 17,
+  "pierde": 22
+ },
+ "palabras+clm+reordenador - palabras+reordenador": {
+  "diferencia": 0.014,
+  "ic95": [
+   -0.016,
+   0.05
+  ],
+  "gana": 10,
+  "empata": 32,
+  "pierde": 8
+ },
+ "coste_juez": 0.02
+}

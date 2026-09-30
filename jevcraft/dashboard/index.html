@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jev commander</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #111110;
+    --surface: #1a1a19;
+    --surface-2: #232322;
+    --border: #2e2e2c;
+    --text: #ffffff;
+    --text-2: #c3c2b7;
+    --text-3: #8a897f;
+    --bar: #3987e5;          /* sequential blue, magnitude */
+    --bar-dim: #184f95;
+    --accent: #d95926;       /* slot 2 orange: army */
+    --good: #0ca30c;
+    --warning: #fab219;
+    --serious: #ec835a;
+    --critical: #d03b3b;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --sans: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font-family: var(--sans); }
+  body { display: grid; grid-template-rows: auto 1fr; }
+  header { display: flex; align-items: center; gap: 16px; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 16px; font-weight: 600; margin: 0; letter-spacing: .02em; }
+  header h1 span { color: var(--text-3); font-weight: 400; }
+  .status { margin-left: auto; display: flex; gap: 20px; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+  .status b { color: var(--text); font-weight: 500; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); margin-right: 6px; }
+  .dot.live { background: var(--good); box-shadow: 0 0 8px var(--good); }
+  main { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 4fr); gap: 16px; padding: 16px 20px; min-height: 0; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  .col { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .card h2 { margin: 0 0 10px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--text-3); }
+  .choice { display: grid; grid-template-columns: 110px 1fr 52px; gap: 6px 12px; align-items: center; font-size: 14px; }
+  .choice .k { color: var(--text-2); font-family: var(--mono); font-size: 13px; }
+  .choice .k.win { color: var(--text); font-weight: 600; }
+  .choice .v { font-family: var(--mono); font-size: 13px; color: var(--text-2); text-align: right; }
+  .track { height: 14px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .fill { height: 100%; width: 0; background: var(--bar-dim); border-radius: 0 4px 4px 0; transition: width .35s ease; }
+  .fill.win { background: var(--bar); }
+  .army .fill.win { background: var(--accent); }
+  .meta { margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--text-3); display: flex; gap: 14px; flex-wrap: wrap; }
+  .meta .fb { color: var(--warning); }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .kpi { background: var(--surface-2); border-radius: 8px; padding: 10px 12px; }
+  .kpi .l { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .n { font-family: var(--mono); font-size: 22px; font-weight: 500; margin-top: 2px; }
+  .kpi .n small { font-size: 12px; color: var(--text-3); margin-left: 4px; }
+  .threat { display: flex; gap: 4px; margin: 6px 0 4px; }
+  .threat .seg { flex: 1; height: 14px; border-radius: 4px; background: var(--surface-2); }
+  .threat .seg.on1 { background: var(--good); }
+  .threat .seg.on2 { background: var(--warning); }
+  .threat .seg.on3 { background: var(--serious); }
+  .threat .seg.on4 { background: var(--critical); }
+  .threat-label { font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+  .nouls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .noul { display: grid; grid-template-columns: 1fr 44px; gap: 4px 10px; align-items: center; font-size: 13px; color: var(--text-2); }
+  .noul .track { grid-column: 1 / -1; height: 8px; }
+  .noul .v { font-family: var(--mono); text-align: right; }
+  pre { margin: 0; font-family: var(--mono); font-size: 12px; line-height: 1.45; color: var(--text-2); white-space: pre-wrap; word-break: break-word; overflow: auto; max-height: 100%; }
+  .state { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  .state pre { flex: 1; }
+  .k1 { color: #86b6ef; } .n1 { color: #d95926; } .s1 { color: #c3c2b7; }
+  .log { max-height: 220px; overflow: auto; font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+  .log div { padding: 3px 0; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 52px 1fr; gap: 10px; }
+  .log .t { color: var(--text-3); }
+  .log .chg { color: var(--text); }
+  .err { color: var(--critical); }
+</style>
+</head>
+<body>
+<header>
+  <h1>jev commander <span>· StarCraft II</span></h1>
+  <div class="status">
+    <div><span class="dot" id="dot"></span><span id="conn">connecting</span></div>
+    <div>game <b id="gtime">0:00</b></div>
+    <div>model <b id="model">–</b></div>
+  </div>
+</header>
+<main>
+  <div class="col">
+    <div class="card">
+      <h2>Macro focus <span style="float:right;color:var(--text-3)"><span data-brain>jev</span> · Choice</span></h2>
+      <div class="choice" id="macro"></div>
+      <div class="meta" id="macro-meta"></div>
+    </div>
+    <div class="card army">
+      <h2>Army stance <span style="float:right;color:var(--text-3)"><span data-brain>jev</span> · Choice</span></h2>
+      <div class="choice" id="army"></div>
+      <div class="meta" id="army-meta"></div>
+    </div>
+    <div class="card">
+      <h2>Threat to base <span style="float:right;color:var(--text-3)"><span data-brain>jev</span> · Score 0–3</span></h2>
+      <div class="threat" id="threat"><div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+      <div class="threat-label" id="threat-label">–</div>
+      <div class="nouls">
+        <div class="noul"><span>Enemy rushing <span style="color:var(--text-3)">· Noul</span></span><span class="v" id="rush-v">–</span><div class="track"><div class="fill" id="rush"></div></div></div>
+        <div class="noul"><span>We are ahead <span style="color:var(--text-3)">· Noul</span></span><span class="v" id="ahead-v">–</span><div class="track"><div class="fill" id="ahead"></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Decision log</h2>
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card">
+      <div class="kpis">
+        <div class="kpi"><div class="l">latency</div><div class="n" id="lat">–<small>ms</small></div></div>
+        <div class="kpi"><div class="l">decisions</div><div class="n" id="calls">0</div></div>
+        <div class="kpi"><div class="l">tokens / call</div><div class="n" id="tok">–</div></div>
+        <div class="kpi"><div class="l">total cost</div><div class="n" id="cost">$0.0000</div></div>
+      </div>
+    </div>
+    <div class="card state">
+      <h2 id="state-h">State sent to jev</h2>
+      <pre id="state">waiting for the first decision…</pre>
+    </div>
+  </div>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const MACRO = ["workers","expand","production","tech","army"];
+const ARMY = ["defend","pressure","attack","retreat"];
+const THREAT = ["no enemy activity near our bases","enemy scouts or a few units nearby","a meaningful enemy force approaching","base under attack right now"];
+let lastMacro = null, lastArmy = null;
+
+function rows(el, keys) {
+  el.innerHTML = keys.map(k => `<span class="k" data-k="${k}">${k}</span><div class="track"><div class="fill" data-f="${k}"></div></div><span class="v" data-v="${k}">–</span>`).join("");
+}
+rows($("macro"), MACRO); rows($("army"), ARMY);
+
+function setChoice(el, metaEl, answer, decision, key) {
+  const win = decision[key];
+  const probs = answer ? (answer.probabilities || {}) : { [win]: 1 };
+  el.querySelectorAll(".k").forEach(k => k.classList.toggle("win", k.dataset.k === win));
+  el.querySelectorAll(".fill").forEach(f => { const p = probs[f.dataset.f] ?? 0; f.style.width = (p*100).toFixed(1)+"%"; f.classList.toggle("win", f.dataset.f === win); });
+  el.querySelectorAll(".v").forEach(v => { const p = probs[v.dataset.v]; v.textContent = p == null ? "–" : (p*100).toFixed(0)+"%"; });
+  const conf = decision.confidence?.[key];
+  const fb = (decision.fallback||[]).includes(key);
+  const held = (decision.held||[]).includes(key);
+  metaEl.innerHTML = `<span>confidence <b style="color:var(--text)">${conf==null?"–":(conf*100).toFixed(0)+"%"}</b></span>` +
+    (fb ? `<span class="fb">below threshold → kept previous decision</span>` : held ? `<span>near tie with <b style="color:var(--text)">${win}</b>, held</span>` : answer ? `<span>jev chose <b style="color:var(--text)">${answer.choice}</b></span>` : `<span>rule mode, no jev call</span>`);
+}
+
+function colorJSON(obj) {
+  return JSON.stringify(obj, null, 2)
+    .replace(/"([^"]+)":/g, '<span class="k1">"$1"</span>:')
+    .replace(/: (\d+(\.\d+)?)/g, ': <span class="n1">$1</span>')
+    .replace(/: "([^"]*)"/g, ': <span class="s1">"$1"</span>');
+}
+
+function clock(s) { s = Math.floor(s); return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`; }
+
+function onDecision(m) {
+  const d = m.decision, a = m.answers || {};
+  $("gtime").textContent = clock(m.game_time || 0);
+  $("model").textContent = m.model || "–";
+  // with --skip or --no-jev the code's rules decide: the labels must not credit jev for that
+  const rules = m.model === "rule-mode";
+  document.querySelectorAll("[data-brain]").forEach(e => { e.textContent = rules ? "rules" : "jev"; });
+  $("state-h").textContent = rules ? "Game state (rule mode, not sent to jev)" : "State sent to jev";
+  setChoice($("macro"), $("macro-meta"), a.macro_focus, d, "macro_focus");
+  setChoice($("army"), $("army-meta"), a.army_stance, d, "army_stance");
+  const t = d.threat ?? 0, lvl = Math.round(t);
+  document.querySelectorAll("#threat .seg").forEach((s, i) => { s.className = "seg" + (i <= lvl ? " on"+(lvl+1) : ""); });
+  $("threat-label").textContent = `${t.toFixed(1)} · ${THREAT[Math.min(3, Math.max(0, lvl))]}`;
+  $("rush").style.width = (d.enemy_rushing*100).toFixed(0)+"%"; $("rush-v").textContent = (d.enemy_rushing*100).toFixed(0)+"%";
+  $("ahead").style.width = (d.ahead*100).toFixed(0)+"%"; $("ahead-v").textContent = (d.ahead*100).toFixed(0)+"%";
+  $("lat").innerHTML = `${m.latency_ms}<small>ms</small>`;
+  $("calls").textContent = m.totals?.calls ?? m.seq;
+  $("tok").textContent = m.usage?.input_tokens || "–";
+  $("cost").textContent = "$" + (m.totals?.cost_usd ?? 0).toFixed(4);
+  $("state").innerHTML = colorJSON(m.state);
+  const changes = [];
+  if (d.macro_focus !== lastMacro) changes.push(`macro → <b>${d.macro_focus}</b>`);
+  if (d.army_stance !== lastArmy) changes.push(`army → <b>${d.army_stance}</b>`);
+  lastMacro = d.macro_focus; lastArmy = d.army_stance;
+  addLog(clock(m.game_time||0), changes.length ? changes.join(" · ") : `<span style="color:var(--text-3)">${d.macro_focus} / ${d.army_stance} · threat ${t.toFixed(1)} · ${m.latency_ms} ms</span>`, changes.length ? "chg" : "");
+}
+
+function addLog(t, html, cls) {
+  const log = $("log");
+  const row = document.createElement("div");
+  row.innerHTML = `<span class="t">${t}</span><span class="${cls}">${html}</span>`;
+  log.prepend(row);
+  while (log.children.length > 80) log.removeChild(log.lastChild);
+}
+
+function connect() {
+  const ws = new WebSocket(`ws://${location.host}/ws`);
+  ws.onopen = () => { $("dot").classList.add("live"); $("conn").textContent = "live"; };
+  ws.onclose = () => { $("dot").classList.remove("live"); $("conn").textContent = "reconnecting"; setTimeout(connect, 1500); };
+  ws.onmessage = ev => {
+    const m = JSON.parse(ev.data);
+    if (m.type === "decision") onDecision(m);
+    else if (m.type === "error") addLog("", `<span class="err">jev error: ${m.message}</span>`, "");
+    else if (m.type === "end") addLog("", `<b>game over: ${m.result}</b>`, "chg");
+    else if (m.type === "info") addLog("", `<b>${m.message}</b>`, "chg");
+  };
+}
+connect();
+</script>
+</body>
+</html>

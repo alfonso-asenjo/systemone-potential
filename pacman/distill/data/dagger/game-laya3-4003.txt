@@ -1,0 +1,8 @@
+semilla 4003, hasta 12 min
+  88 s  se come a Cabo Verde (+200)
+ 121 s  muere (Cabo Verde), nivel 1, 24 bolitas, 1780 puntos
+ 159 s  muere (Cabo Verde), nivel 1, 7 bolitas, 1990 puntos
+ 183 s  nivel 1 superado, 2060 puntos
+ 240 s  se come a Francia (+200)
+ 263 s  muere (Argentina), nivel 2, 53 bolitas, 3550 puntos
+ 263 s  PIERDE: nivel 2, 3550 puntos, 0 vidas, 53 bolitas; 566 decisiones, 0 tarde, 0 errores, $0.0000

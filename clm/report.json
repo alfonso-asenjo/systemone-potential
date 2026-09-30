@@ -1,0 +1,22 @@
+{
+ "carga_s": 45,
+ "vram_gb": 4.59,
+ "comecocos": {
+  "cruces": 300,
+  "coincide_con_jev": 0.4,
+  "coincide_cuando_jev_seguro": 0.396,
+  "coincide_con_rival_cerca": 0.355,
+  "n_rival_cerca": 31,
+  "ms_p50": 691.6,
+  "ms_p90": 790.3
+ },
+ "bluesky": {
+  "posts": 600,
+  "emotion_coincide_con_jev": 0.287,
+  "topic_coincide_con_jev": 0.29,
+  "ms_p50_por_post": 164.1,
+  "ms_p90_por_post": 203.6
+ },
+ "vectores_no_finitos": 0,
+ "vram_max_gb": 4.89
+}

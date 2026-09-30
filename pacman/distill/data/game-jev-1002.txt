@@ -1,0 +1,9 @@
+semilla 1002, hasta 12 min
+ 196 s  muere (Cabo Verde), nivel 1, 5 bolitas, 1810 puntos
+ 223 s  nivel 1 superado, 1860 puntos
+ 274 s  se come a Francia (+200)
+ 279 s  se come a Portugal (+400)
+ 326 s  muere (Argentina), nivel 2, 38 bolitas, 3900 puntos
+ 355 s  se come a Francia (+200)
+ 420 s  nivel 2 superado, 4520 puntos
+ 422 s  GANA: nivel 2, 4520 puntos, 1 vidas, 0 bolitas; 909 decisiones, 4 tarde, 0 errores, $0.2320

@@ -1,0 +1,5 @@
+semilla 2009, hasta 12 min
+  54 s  muere (Austria), nivel 1, 68 bolitas, 1140 puntos
+  74 s  muere (Arabia Saudí), nivel 1, 41 bolitas, 1410 puntos
+ 169 s  muere (Arabia Saudí), nivel 1, 7 bolitas, 1790 puntos
+ 169 s  PIERDE: nivel 1, 1790 puntos, 0 vidas, 7 bolitas; 365 decisiones, 0 tarde, 0 errores, $0.4850

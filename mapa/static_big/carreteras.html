@@ -1,0 +1,1181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="only light">
+<title>Mapa de carreteras · España</title>
+<meta name="description" content="Los 8.131 municipios de España en un mapa de carreteras de los 90: escribes lo que buscas y el copiloto marca los pueblos con rotulador.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,400;0,500;0,700;1,400&family=Oswald:wght@500;700&family=EB+Garamond:ital@1&family=Special+Elite&family=Caveat:wght@500;700&family=Kalam:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: only light;   /* es papel: que el navegador no lo oscurezca por su cuenta */
+  --desk: #2B2622;
+  --paper: #F3EAD0;
+  --land: #F7F0DB;
+  --neighbor: #E6DFCB;
+  --sea: #C3DEE9;
+  --sea-line: #8DBCD2;
+  --water: #3E8DC2;
+  --ink: #24201B;
+  --ink-2: #5C5347;
+  --prov: #8B5A9C;
+  --red: #D8362A;
+  --marker: #D1221A;
+  --yellow: #F2C12E;
+  --hl: rgba(255, 234, 0, .62);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--desk); overflow: hidden; color: var(--ink);
+  font-family: "Roboto Condensed", "Arial Narrow", sans-serif; }
+
+/* la hoja desplegada sobre la mesa */
+#sheet { position: absolute; inset: 12px; background: var(--paper); display: flex;
+  box-shadow: 0 14px 40px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.25); }
+#mapwrap { position: relative; flex: 1; min-width: 0; }
+svg#map { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+svg#map:active { cursor: grabbing; }
+
+/* pliegues y grano del papel, por encima de todo y sin atrapar el ratón */
+#folds { position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  background: url(pliegues.png) center / 100% 100% no-repeat; mix-blend-mode: hard-light; opacity: .62; }
+#grain { position: absolute; inset: 0; pointer-events: none; z-index: 5; mix-blend-mode: multiply; opacity: .2;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .18  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"); }
+
+/* la columna de la portada, la leyenda y el índice */
+#panel { width: 372px; flex: none; border-left: 2px solid var(--ink); display: flex; flex-direction: column;
+  overflow-y: auto; position: relative; z-index: 2; scrollbar-width: thin; }
+.cover { background: var(--red); color: #fff; padding: 14px 18px 12px; border-bottom: 2px solid var(--ink); position: relative; }
+.cover .band { font: 700 13px Oswald, sans-serif; letter-spacing: .32em; }
+.cover .country { font: 700 64px/.95 Oswald, sans-serif; letter-spacing: .03em; margin-top: 4px; }
+.cover .edition { font: 500 12.5px/1.35 "Roboto Condensed"; letter-spacing: .06em; margin-top: 6px; opacity: .95; }
+.cover .seal { position: absolute; right: 16px; top: 16px; width: 64px; height: 64px; border-radius: 50%;
+  background: var(--yellow); color: var(--ink); display: grid; place-items: center; text-align: center;
+  font: 700 11px/1.05 Oswald; letter-spacing: .04em; transform: rotate(9deg); border: 2px solid var(--ink);
+  box-shadow: 2px 2px 0 rgba(0,0,0,.25); }
+.search { padding: 14px 18px 12px; border-bottom: 1.5px solid var(--ink); background: #FBF5E3; }
+.search label { display: block; font: 700 12px Oswald; letter-spacing: .22em; text-transform: uppercase; margin-bottom: 7px; }
+#q { width: 100%; font: 17px "Special Elite", monospace; color: var(--ink); background: #FFFDF4;
+  border: 1.5px solid var(--ink); padding: 9px 10px; outline: none; box-shadow: 3px 3px 0 rgba(36,32,27,.18); }
+#q:focus { box-shadow: 3px 3px 0 var(--yellow); }
+#status { font: 12px "Roboto Condensed"; color: var(--ink-2); margin-top: 6px; min-height: 15px; letter-spacing: .02em; }
+.sec { padding: 12px 18px; border-bottom: 1.5px solid var(--ink); }
+.sec h3 { margin: 0 0 8px; font: 700 12px Oswald; letter-spacing: .22em; text-transform: uppercase; }
+.hint { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.4; }
+#index { list-style: none; margin: 0; padding: 0; }
+#index li { display: flex; align-items: baseline; gap: 6px; padding: 3.5px 0; cursor: pointer; font-size: 14.5px; }
+#index li:hover .nm, #index li.on .nm { background: linear-gradient(transparent 45%, var(--hl) 45%, var(--hl) 92%, transparent 92%); }
+#index .n { font: 700 17px Caveat, cursive; color: var(--marker); width: 16px; flex: none; text-align: center; }
+#index .nm { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 185px; }
+#index .nm small { font-weight: 400; color: var(--ink-2); font-size: 12.5px; }
+#index .dots { flex: 1; border-bottom: 1.6px dotted rgba(36,32,27,.55); transform: translateY(-4px); min-width: 12px; }
+#index .ref { font: 700 13px "Roboto Condensed"; letter-spacing: .04em; }
+#index .pc { font-size: 12.5px; color: var(--ink-2); width: 34px; text-align: right; }
+#index li.minor { font-size: 13px; }
+#index li.minor .n { color: var(--ink-2); font: 400 13px "Roboto Condensed"; }
+.ficha .name { font: 700 30px/1 Oswald; letter-spacing: .01em; }
+.ficha .prov { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); margin: 4px 0 10px; }
+.ficha table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-bottom: 10px; }
+.ficha td { padding: 3px 0; border-bottom: 1px dotted rgba(36,32,27,.35); }
+.ficha td:last-child { text-align: right; font-weight: 700; }
+.ficha p { margin: 0 0 10px; font-size: 14px; line-height: 1.42; }
+.ficha .match { font: 700 20px Caveat, cursive; color: var(--marker); }
+.btn { font: 700 12px Oswald; letter-spacing: .18em; text-transform: uppercase; background: var(--ink); color: var(--paper);
+  border: 0; padding: 8px 12px; cursor: pointer; }
+.btn:hover { background: var(--red); }
+#examples { list-style: none; margin: 0; padding: 0; columns: 1; }
+#examples li { font-size: 13.5px; padding: 2.5px 0; cursor: pointer; display: flex; gap: 7px; align-items: baseline; }
+#examples li::before { content: "▸"; color: var(--red); font-size: 11px; }
+#examples li:hover { text-decoration: underline; text-decoration-color: var(--red); }
+.legend svg { display: block; }
+.legend .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; font-size: 12px; }
+.legend .row div { display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+.foot { margin-top: auto; padding: 10px 18px 12px; font-size: 11.5px; color: var(--ink-2); line-height: 1.45; letter-spacing: .02em; }
+.foot b { color: var(--ink); }
+
+@media (max-width: 900px) {
+  #sheet { flex-direction: column; inset: 6px; }
+  #mapwrap { flex: 1 1 58%; }
+  #panel { width: auto; flex: 0 0 42%; border-left: 0; border-top: 2px solid var(--ink); }
+  .cover .country { font-size: 40px; }
+  .cover .seal { width: 52px; height: 52px; font-size: 9px; }
+}
+
+/* plano de detalle: una hoja del Mapa Topográfico Nacional pegada encima */
+#detail { position: absolute; z-index: 7; background: #FFFBEE; border: 2px solid var(--ink); display: flex; flex-direction: column;
+  box-shadow: 0 14px 30px rgba(0,0,0,.38), 0 2px 0 rgba(0,0,0,.2); transform: rotate(-.5deg); animation: dealIn .45s ease-out; }
+@keyframes dealIn { from { opacity: 0; transform: translateY(22px) rotate(1.8deg); } }
+#detail[hidden] { display: none; }
+.d-head { display: flex; align-items: baseline; gap: 12px; background: var(--ink); color: var(--paper); padding: 8px 12px 7px; }
+.d-kicker { font: 700 11px Oswald; letter-spacing: .28em; color: var(--yellow); white-space: nowrap; }
+#d-name { font: 700 21px/1 Oswald; letter-spacing: .04em; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#d-name small { font: 400 12px "Roboto Condensed"; letter-spacing: .14em; opacity: .75; margin-left: 10px; }
+#d-close { background: none; border: 0; color: var(--paper); font: 700 24px/1 Oswald; cursor: pointer; padding: 0 2px; }
+#d-close:hover { color: var(--yellow); }
+.d-body { position: relative; flex: 1; min-height: 0; background: #F6EDD2; overflow: hidden; }
+#dmap { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; mix-blend-mode: multiply; touch-action: none; }
+#dmap:active { cursor: grabbing; }
+#d-tiles { filter: sepia(.3) saturate(.82) contrast(1.04); }
+#d-msg { position: absolute; left: 12px; bottom: 10px; font: 13px "Special Elite"; color: var(--ink-2); background: rgba(255,251,238,.9); padding: 3px 8px; }
+#d-msg:empty { display: none; }
+.d-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 12px 5px; border-top: 1.5px solid var(--ink);
+  font-size: 11.5px; color: var(--ink-2); letter-spacing: .03em; }
+.d-foot b { color: var(--ink); }
+.tape { position: absolute; width: 96px; height: 27px; background: rgba(233,221,186,.78); box-shadow: 0 1px 2px rgba(0,0,0,.2); pointer-events: none; }
+.tape.t1 { left: -28px; top: -11px; transform: rotate(-33deg); }
+.tape.t2 { right: -28px; bottom: -11px; transform: rotate(-31deg); }
+.band-lbl { font: 700 19px Oswald, sans-serif; fill: #1E3F66; }
+
+/* la foto del pueblo: una polaroid pegada junto al plano de detalle */
+#polaroid { position: absolute; z-index: 8; margin: 0; width: 290px; background: #FDFCF7; padding: 13px 13px 0;
+  box-shadow: 0 12px 26px rgba(0,0,0,.38), 0 1px 2px rgba(0,0,0,.25); transform: rotate(-4deg); transform-origin: 60% 40%;
+  transition: width .35s ease, transform .35s ease; cursor: zoom-in; animation: dropIn .5s ease-out; }
+#polaroid[hidden] { display: none; }
+#polaroid.big { width: 560px; transform: rotate(-1.5deg); cursor: zoom-out; }
+@keyframes dropIn { from { opacity: 0; transform: translate(-14px, -26px) rotate(-9deg); } }
+#polaroid .ph { position: relative; aspect-ratio: 1 / 1; overflow: hidden; background: #2A2A30; }
+#polaroid.big .ph { aspect-ratio: 4 / 3; }
+#ph-img { width: 100%; height: 100%; object-fit: cover; display: block; filter: sepia(.2) saturate(.88) contrast(1.06) brightness(1.02);
+  opacity: 0; transition: opacity 1.6s ease, filter 2.4s ease; }
+#ph-img.ready { opacity: 1; }
+#polaroid.developing #ph-img { filter: sepia(.2) saturate(.2) contrast(.7) brightness(1.25) blur(1.5px); }
+#polaroid .ph::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 40px rgba(40,25,10,.35), inset 0 0 3px rgba(0,0,0,.5); }
+#ph-cap { font: 700 27px/1.05 Caveat, cursive; color: #2B3A67; text-align: center; padding: 9px 4px 3px; transform: rotate(-1deg);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#ph-credit { font: 10px/1.3 "Roboto Condensed"; color: #8A8171; text-align: center; padding: 0 4px 9px; }
+#ph-credit a { color: inherit; }
+#polaroid .tape { left: 50%; top: -14px; width: 104px; transform: translateX(-50%) rotate(3deg); }
+
+/* la ficha de la población: una ficha de cartulina rayada, escrita a mano, debajo del plano */
+#note { position: absolute; z-index: 7; background-color: #FFFDF3; color: #213A8F; display: grid;
+  grid-template-columns: minmax(230px, 0.85fr) 1.15fr; column-gap: 28px; padding: 14px 26px 14px 62px;
+  font: 400 19px/28px Kalam, cursive; transform: rotate(.7deg); animation: dealIn .5s ease-out .08s both;
+  box-shadow: 0 10px 22px rgba(0,0,0,.32), 0 1px 1px rgba(0,0,0,.2);
+  background-image:
+    linear-gradient(90deg, transparent 46px, rgba(214,60,60,.55) 46px, rgba(214,60,60,.55) 48px, transparent 48px),
+    repeating-linear-gradient(180deg, transparent 0 27px, rgba(80,130,200,.35) 27px 28px);
+  background-position: 0 0, 0 9px; overflow: hidden; align-content: start; }
+#note[hidden] { display: none; }
+#note .n-name { grid-column: 1 / -1; font: 700 40px/56px Caveat, cursive; color: #1A2F78; margin: -8px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#note .n-name small { font: 400 20px Kalam, cursive; color: #4A5A9A; margin-left: 12px; }
+#note .n-match { grid-column: 1 / -1; font: 700 26px/28px Caveat, cursive; color: #C8261D; }
+#note dl { margin: 0; display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-content: start; }
+#note dt { color: #4A5A9A; }
+#note dd { margin: 0; font-weight: 700; }
+#note .n-rasgos { margin: 0; }
+#note .n-back { grid-column: 1 / -1; justify-self: start; background: none; border: 0; padding: 0; margin-top: 2px; cursor: pointer;
+  font: 700 22px/28px Caveat, cursive; color: #C8261D; text-decoration: underline wavy rgba(200,38,29,.5); text-underline-offset: 4px; }
+#note .n-back:hover { color: #8F140E; }
+#note .tape { left: 50%; top: -13px; width: 110px; transform: translateX(-50%) rotate(-2deg); }
+
+/* en el mapa */
+.lbl { font-family: "Roboto Condensed"; fill: var(--ink); paint-order: stroke; stroke: var(--land); stroke-width: 3px; stroke-linejoin: round; }
+.lbl.cap { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.lbl.big { font-weight: 700; }
+.lbl.sel { fill: var(--marker); font-weight: 700; }
+.water-lbl { font-family: "EB Garamond", serif; font-style: italic; fill: #3C7FAE; letter-spacing: .32em; font-size: calc(17px / var(--k)); }
+.country-lbl { font-family: Oswald; font-weight: 500; fill: #9C9383; letter-spacing: .45em; font-size: calc(15px / var(--k)); }
+.prov-lbl { font-family: "Roboto Condensed"; fill: var(--prov); letter-spacing: .3em; font-size: calc(10.5px / var(--k));
+  opacity: clamp(0, calc(1.5 - var(--k) * .25), .75); text-transform: uppercase; }
+.grid-lbl { font: 700 calc(11px / var(--k)) "Roboto Condensed"; fill: #56789A; }
+.pt { fill: var(--ink-2); stroke: none; }
+.pt.s0 { r: calc(0.95px / var(--k)); opacity: .65; }
+.pt.s1 { r: calc(1.5px / var(--k)); }
+.pt.s2 { r: calc(2.2px / var(--k)); fill: var(--ink); }
+.pt.s3 { r: calc(3.1px / var(--k)); fill: var(--ink); }
+.pt.cap { r: calc(4.4px / var(--k)); fill: #fff; stroke: var(--ink); stroke-width: 1.6px; vector-effect: non-scaling-stroke; }
+.pt.capdot { r: calc(1.7px / var(--k)); fill: var(--red); pointer-events: none; }
+#places .pt { cursor: pointer; }
+.ns { vector-effect: non-scaling-stroke; fill: none; }
+#overlay { pointer-events: none; }
+#labels .lbl { pointer-events: auto; cursor: pointer; }
+svg#map.over-place { cursor: pointer; }
+.hl { fill: none; stroke: rgba(255, 232, 0, .58); stroke-linecap: butt; mix-blend-mode: multiply; filter: url(#hl-rough); }
+.mk { filter: url(#ink); }
+.mark { fill: var(--marker); opacity: .9; }
+.mark2 { fill: var(--marker); opacity: .38; }
+.mark-blob { fill: #B3150F; opacity: .55; }
+.mark-n { font: 700 25px Caveat, cursive; fill: var(--marker); }
+.mk.pulse .mark { opacity: 1; }
+.mk.pulse { filter: url(#ink) drop-shadow(0 0 3px rgba(209,34,26,.45)); }
+.hover-lbl { font: 700 12.5px "Roboto Condensed"; fill: var(--ink); paint-order: stroke; stroke: #FFFBEA; stroke-width: 4px; stroke-linejoin: round; }
+#loading { position: absolute; inset: 0; display: grid; place-items: center; font: 22px "Special Elite"; color: var(--ink-2); z-index: 3; }
+</style>
+</head>
+<body>
+<div id="sheet">
+  <div id="mapwrap">
+    <svg id="map" aria-label="Mapa de carreteras de España con los 8.131 municipios">
+      <defs>
+        <clipPath id="inset-clip"><rect id="inset-clip-rect"></rect></clipPath>
+        <filter id="ink" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="7" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="1.8" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+        <filter id="hl-rough" x="-20%" y="-40%" width="140%" height="180%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.35" numOctaves="2" seed="3" result="n"/>
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+      <g id="zoom">
+        <rect id="sea"></rect>
+        <g id="sealines"></g>
+        <g id="neighbors"></g>
+        <g id="spain"></g>
+        <g id="lakes"></g>
+        <g id="rivers"></g>
+        <g id="rail"></g>
+        <g id="roads"></g>
+        <g id="provlines"></g>
+        <g id="munis"></g>
+        <g id="maplabels"></g>
+        <g id="inset"></g>
+        <g id="grid"></g>
+        <g id="places"></g>
+      </g>
+      <g id="overlay">
+        <g id="hls"></g>
+        <g id="labels"></g>
+        <g id="marks"></g>
+        <g id="hover"></g>
+      </g>
+      <g id="chrome"></g>
+    </svg>
+    <div id="loading">Desplegando el mapa…</div>
+    <figure id="polaroid" hidden>
+      <div class="ph"><img id="ph-img" alt=""></div>
+      <figcaption id="ph-cap"></figcaption>
+      <div id="ph-credit"></div>
+      <i class="tape"></i>
+    </figure>
+    <div id="note" hidden></div>
+    <div id="detail" hidden>
+      <div class="d-head"><span class="d-kicker">PLANO DE DETALLE</span><span id="d-name"></span><button id="d-close" aria-label="Cerrar el plano">×</button></div>
+      <div class="d-body">
+        <svg id="dmap" aria-label="Mapa topográfico del municipio"><g id="d-zoom"><g id="d-tiles"></g><g id="d-over"></g></g><g id="d-marks"></g></svg>
+        <div id="d-msg"></div>
+      </div>
+      <div class="d-foot"><svg id="d-scale" width="190" height="24"></svg><span>Mapa Topográfico Nacional · <b>© Instituto Geográfico Nacional</b> (CC BY 4.0)</span></div>
+      <i class="tape t1"></i><i class="tape t2"></i>
+    </div>
+  </div>
+
+  <aside id="panel">
+    <div class="cover">
+      <div class="band">MAPA DE CARRETERAS</div>
+      <div class="country">ESPAÑA</div>
+      <div class="edition">Escala 1:2.000.000 · Edición 1994<br><span id="count">8.131</span> municipios · con índice de poblaciones</div>
+      <div class="seal">CON<br>COPILOTO<br>IA</div>
+    </div>
+    <div class="search">
+      <label for="q">¿Adónde vamos?</label>
+      <input id="q" type="text" autocomplete="off" spellcheck="false" placeholder="pueblo con playa y surf…" aria-label="Qué buscas">
+      <div id="status" aria-live="polite"></div>
+    </div>
+    <div class="sec" id="sec-index">
+      <h3>Índice de poblaciones</h3>
+      <ol id="index"></ol>
+      <p class="hint" id="hint">Escribe lo que buscas y el copiloto te marca los pueblos en el mapa. Pulsa uno para ir a verlo.</p>
+    </div>
+    <div class="sec ficha" id="sec-ficha" hidden></div>
+    <div class="sec" id="sec-routes">
+      <h3>Rutas sugeridas</h3>
+      <ul id="examples"></ul>
+    </div>
+    <div class="sec legend">
+      <h3>Signos convencionales</h3>
+      <div class="row" id="legend"></div>
+    </div>
+    <div class="foot">Copiloto: <span id="brain">modelo local</span>, en este ordenador · <b id="lat">–</b> por búsqueda · <b>0 €</b><br>Cartografía: IGN y Natural Earth · Descripciones a partir de Wikipedia</div>
+  </aside>
+  <div id="folds"></div>
+  <div id="grain"></div>
+</div>
+
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+const TAU = Math.PI * 2;
+const fmt = new Intl.NumberFormat("es-ES", { useGrouping: "always" });
+const EXAMPLES = [
+  "pueblo tranquilo con playa y surf", "ver las estrellas", "comer pulpo y marisco", "montaña y silencio",
+  "ruta de vinos y bodegas", "playa con dunas y naturaleza", "castillos medievales a menos de 2 horas de Madrid", "fiestas con toros en agosto",
+];
+const COLS = "ABCDEFGHJKLM";          // como en los atlas, sin la I
+const ROWS = 9;
+const BAND = 30;                      // franja del marco con las letras y los números
+
+// ------------------------------------------------------------------ estado
+const S = { places: [], xy: [], can: [], cls: [], W: 0, H: 0, proj: null, projCan: null, inset: null,
+  probs: {}, ranked: [], sel: null, t: d3.zoomIdentity, labelT: d3.zoomIdentity, seq: 0, last: 0, typing: null,
+  topo: null, geomById: null, nbrs: null, provTopo: null, geo: null };
+const svg = d3.select("#map"), gz = d3.select("#zoom");
+const zoom = d3.zoom().scaleExtent([1, 90]).on("zoom", onZoom).on("end", () => layoutLabels());
+
+Promise.all([
+  fetch("carreteras-lugares.json").then((r) => r.json()),
+  fetch("vendor/provinces.json").then((r) => r.json()),
+  fetch("carreteras-geo.json").then((r) => r.json()),
+]).then(([places, prov, geo]) => {
+  S.places = places; S.provTopo = prov; S.geo = geo;
+  rewind(geo.countries); rewind(geo.lakes);
+  $("count").textContent = fmt.format(places.length);
+  S.can = places.map((p) => p[5].startsWith("35") || p[5].startsWith("38"));
+  S.cls = places.map((p) => (p[2] >= 50000 ? 3 : p[2] >= 10000 ? 2 : p[2] >= 2000 ? 1 : 0));
+  markCapitals();
+  build();
+  $("loading").remove();
+  window.addEventListener("resize", debounce(build, 250));
+  connect();
+  setupInput();
+});
+
+// Natural Earth da los anillos exteriores en sentido antihorario y d3 los quiere al revés:
+// si un polígono sale más grande que media esfera, es que se ha leído del revés.
+function rewind(fc) {
+  for (const f of fc.features) {
+    const g = f.geometry, polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
+    for (const poly of polys) if (d3.geoArea({ type: "Polygon", coordinates: poly }) > TAU) poly.forEach((r) => r.reverse());
+  }
+}
+
+// capitales de provincia: la más poblada de cada una, salvo tres que no lo son
+function markCapitals() {
+  const best = {};
+  S.places.forEach((p, i) => { if (!best[p[1]] || p[2] > S.places[best[p[1]]][2]) best[p[1]] = i; });
+  const fix = { Pontevedra: "Pontevedra", Asturias: "Oviedo", "Cádiz": "Cádiz" };
+  for (const [prov, name] of Object.entries(fix)) {
+    const i = S.places.findIndex((p) => p[1] === prov && p[0] === name);
+    if (i >= 0) best[prov] = i;
+  }
+  S.capital = new Set(Object.values(best));
+}
+
+// ------------------------------------------------------------------ montaje del mapa
+function build() {
+  const box = $("mapwrap").getBoundingClientRect();
+  const W = (S.W = box.width), H = (S.H = box.height);
+  svg.attr("viewBox", `0 0 ${W} ${H}`);
+  const provs = topojson.feature(S.provTopo, S.provTopo.objects.provinces).features;
+  const isCanP = (f) => f.id === "35" || f.id === "38";
+  // península, Baleares, Ceuta y Melilla en la proyección principal; Canarias en su recuadro
+  S.proj = d3.geoConicConformal().rotate([3.6, 0]).center([0, 39.6]).parallels([36.5, 43])
+    .fitExtent([[BAND + W * 0.015, BAND + H * 0.02], [W - BAND - W * 0.01, H - BAND - H * 0.02]],
+      { type: "MultiPoint", coordinates: [[-9.5, 43.85], [4.4, 43.85], [-9.5, 35.35], [4.4, 35.35]] });
+  S.inset = { x: W * 0.64, y: H * 0.74, w: W * 0.35 - BAND - 8, h: H * 0.26 - BAND - 8 };
+  const ins = S.inset;
+  S.projCan = d3.geoMercator().fitExtent([[ins.x + 12, ins.y + 22], [ins.x + ins.w - 12, ins.y + ins.h - 10]],
+    { type: "FeatureCollection", features: provs.filter(isCanP) });
+  const path = d3.geoPath(S.proj), pathC = d3.geoPath(S.projCan);
+  S.path = path; S.pathC = pathC;
+
+  d3.select("#sea").attr("x", -W * 4).attr("y", -H * 4).attr("width", W * 9).attr("height", H * 9).attr("fill", "var(--sea)");
+  const mainProvs = provs.filter((f) => !isCanP(f));
+  const spain = topojson.merge(S.provTopo, S.provTopo.objects.provinces.geometries.filter((g) => !isCanP(g)));
+  const neigh = S.geo.countries.features.filter((f) => f.properties.ADM0_A3 !== "ESP");
+  if (!S.marked) {
+    const es = { type: "Feature", geometry: spain };
+    for (const f of [...S.geo.roads.features, ...S.geo.rail.features]) {
+      const part = f.geometry.coordinates[0], mid = part[Math.floor(part.length / 2)];
+      f.properties.es = mid[0] < -13 || d3.geoContains(es, mid);
+    }
+    S.marked = true;
+  }
+
+  // líneas de agua junto a la costa, como en los mapas grabados
+  const coast = { type: "FeatureCollection", features: [{ type: "Feature", geometry: spain }, ...neigh] };
+  seaLines(d3.select("#sealines"), path, coast);
+
+  d3.select("#neighbors").selectAll("path").data(neigh).join("path").attr("class", "ns").attr("d", path)
+    .style("fill", "var(--neighbor)").attr("stroke", "var(--neighbor)").attr("stroke-width", 3);
+  const g = d3.select("#spain");
+  g.selectAll("*").remove();
+  g.append("path").datum(spain).attr("d", path).attr("fill", "var(--land)");
+  g.append("path").datum(spain).attr("class", "ns").attr("d", path).attr("stroke", "#4F8FBD").attr("stroke-width", 0.9);
+  g.append("path").datum(topojson.mesh(S.provTopo, S.provTopo.objects.border)).attr("class", "ns").attr("d", path)
+    .attr("stroke", "var(--prov)").attr("stroke-width", 2.2).attr("stroke-dasharray", "9 3 2 3");
+
+  drawLines(path, (f) => true);
+  d3.select("#provlines").selectAll("*").remove();
+  d3.select("#provlines").append("path")
+    .datum(topojson.mesh(S.provTopo, S.provTopo.objects.provinces, (a, b) => a !== b && !isCanP(a) && !isCanP(b)))
+    .attr("class", "ns").attr("d", path).attr("stroke", "var(--prov)").attr("stroke-width", 1).attr("stroke-dasharray", "5 2 1.5 2").attr("opacity", 0.8);
+
+  // nombres de mares, países y provincias
+  const L = d3.select("#maplabels"); L.selectAll("*").remove();
+  const put = (cls, [lon, lat], text, rot = 0) => {
+    const p = S.proj([lon, lat]); if (!p) return;
+    L.append("text").attr("class", cls).attr("text-anchor", "middle")
+      .attr("transform", `translate(${p[0]},${p[1]}) rotate(${rot})`).text(text);
+  };
+  put("water-lbl", [-10.2, 42.6], "OCÉANO", -90);
+  put("water-lbl", [-9.85, 40.9], "ATLÁNTICO", -90);
+  put("water-lbl", [-4.6, 44.05], "MAR CANTÁBRICO");
+  put("water-lbl", [2.6, 38.25], "MAR MEDITERRÁNEO", -8);
+  put("water-lbl", [-3.6, 36.05], "MAR DE ALBORÁN");
+  put("water-lbl", [-8.25, 36.3], "GOLFO DE CÁDIZ");
+  put("country-lbl", [-7.95, 40.2], "PORTUGAL", -80);
+  put("country-lbl", [0.8, 43.6], "FRANCIA");
+  put("country-lbl", [-5.4, 35.25], "MARRUECOS");
+  for (const f of mainProvs) {
+    if (f.id === "51" || f.id === "52" || /Gibraltar/.test(f.properties.name)) continue;
+    const [x, y] = path.centroid(f); if (!isFinite(x)) continue;
+    const name = f.properties.name.split("/").pop();
+    L.append("text").attr("class", "prov-lbl").attr("text-anchor", "middle").attr("x", x).attr("y", y).text(name);
+  }
+
+  drawInset(provs.filter(isCanP), pathC);
+  drawGrid();
+
+  // pueblos
+  S.xy = S.places.map((p, i) => (S.can[i] ? S.projCan([p[4], p[3]]) : S.proj([p[4], p[3]])) || [-999, -999]);
+  const P = d3.select("#places"); P.selectAll("*").remove();
+  const order = d3.range(S.places.length).sort((a, b) => S.places[a][2] - S.places[b][2]);
+  for (const i of order) {
+    const [x, y] = S.xy[i];
+    if (S.capital.has(i)) {
+      P.append("circle").attr("class", "pt cap").attr("cx", x).attr("cy", y).attr("data-i", i);
+      P.append("circle").attr("class", "pt capdot").attr("cx", x).attr("cy", y);
+    } else P.append("circle").attr("class", `pt s${S.cls[i]}`).attr("cx", x).attr("cy", y).attr("data-i", i);
+  }
+  S.qt = d3.quadtree(d3.range(S.places.length), (i) => S.xy[i][0], (i) => S.xy[i][1]);
+
+  drawChrome();
+  drawLegend();
+  // un ratón de verdad siempre tiembla un poco al hacer clic: sin tolerancia, d3 lo toma por arrastre
+  svg.call(zoom.clickDistance(6)).on("dblclick.zoom", null);
+  if (!S.picking) { setupPicking(); S.picking = true; }
+  zoom.translateExtent([[-W * 0.1, -H * 0.1], [W * 1.1, H * 1.1]]).extent([[0, 0], [W, H]]);
+  svg.call(zoom.transform, S.t);
+  onZoom({ transform: S.t });
+  layoutLabels();
+  renderResults();
+  if (S.sel != null) { drawMuni(S.sel); if (!$("detail").hidden) openDetail(S.sel); }
+}
+
+function seaLines(g, path, fc) {
+  g.selectAll("*").remove();
+  // trazos concéntricos: se pinta ancho en color de línea y más estrecho en color de mar, alternando
+  for (const [w, c] of [[25, "var(--sea-line)"], [22.2, "var(--sea)"], [16, "var(--sea-line)"], [13.4, "var(--sea)"], [7.5, "var(--sea-line)"], [5.2, "var(--sea)"]]) {
+    g.append("path").datum(fc).attr("class", "ns").attr("d", path).attr("stroke", c).attr("stroke-width", w)
+      .attr("stroke-linejoin", "round").attr("opacity", 0.9);
+  }
+}
+
+// carreteras, ferrocarril, ríos y embalses; keep decide qué entra (todo en la principal, solo Canarias en el recuadro)
+const ROAD = {
+  auto: { casing: ["#5E1A12", 4.8], fill: ["#E4432E", 3.0], center: ["#FFE2D2", 0.8] },
+  nac: { casing: ["#6A2016", 3.3], fill: ["#D9372B", 2.0] },
+  com: { casing: ["#6E5A26", 2.5], fill: ["#F2C12E", 1.45] },
+  loc: { casing: ["#857A69", 1.9], fill: ["#FFFDF4", 0.95] },
+};
+function roadClass(p) {
+  if (p.type && p.type.startsWith("Ferry")) return "ferry";
+  if (p.type === "Major Highway" && p.expressway) return "auto";
+  if (p.type === "Major Highway" || (p.type === "Secondary Highway" && p.expressway)) return "nac";
+  if (p.type === "Secondary Highway") return "com";
+  return "loc";
+}
+function drawLines(path, keep, root = null) {
+  const q = (id) => (root ? root.select(id) : d3.select(id));
+  const lakes = q(root ? ".lakes" : "#lakes"), rivers = q(root ? ".rivers" : "#rivers"), rail = q(root ? ".rail" : "#rail"), roads = q(root ? ".roads" : "#roads");
+  for (const g of [lakes, rivers, rail, roads]) g.selectAll("*").remove();
+  lakes.selectAll("path").data(S.geo.lakes.features.filter(keep)).join("path").attr("d", path)
+    .attr("fill", "var(--sea)").attr("stroke", "var(--water)").attr("stroke-width", 0.7).attr("vector-effect", "non-scaling-stroke");
+  rivers.selectAll("path").data(S.geo.rivers.features.filter(keep)).join("path").attr("class", "ns").attr("d", path)
+    .attr("stroke", "var(--water)").attr("stroke-width", (f) => (f.properties.scalerank <= 5 ? 1.3 : 0.8)).attr("stroke-linecap", "round");
+  const rl = S.geo.rail.features.filter(keep);
+  const away = (f) => (f.properties.es === false ? 0.32 : 1);
+  rail.selectAll("path.a").data(rl).join("path").attr("class", "ns a").attr("d", path).attr("stroke", "#2E2A26").attr("stroke-width", 0.9).attr("opacity", away);
+  rail.selectAll("path.b").data(rl).join("path").attr("class", "ns b").attr("d", path).attr("stroke", "#2E2A26").attr("stroke-width", 4).attr("stroke-dasharray", "0.9 8").attr("opacity", away);
+  const rs = S.geo.roads.features.filter(keep).map((f) => ({ f, c: roadClass(f.properties) }));
+  roads.selectAll("path.fer").data(rs.filter((r) => r.c === "ferry")).join("path").attr("class", "ns fer").attr("d", (r) => path(r.f))
+    .attr("stroke", "#3E8DC2").attr("stroke-width", 1).attr("stroke-dasharray", "5 4");
+  const order = ["loc", "com", "nac", "auto"];
+  for (const layer of ["casing", "fill", "center"]) {
+    for (const c of order) {
+      const st = ROAD[c][layer]; if (!st) continue;
+      roads.append("g").selectAll("path").data(rs.filter((r) => r.c === c)).join("path").attr("class", "ns").attr("d", (r) => path(r.f))
+        .attr("stroke", st[0]).attr("stroke-width", st[1]).attr("stroke-linecap", "round").attr("stroke-linejoin", "round")
+        .attr("opacity", (r) => (r.f.properties.es === false ? 0.32 : 1));
+    }
+  }
+}
+
+function drawInset(canProvs, pathC) {
+  const ins = S.inset, g = d3.select("#inset");
+  g.selectAll("*").remove();
+  d3.select("#inset-clip-rect").attr("x", ins.x).attr("y", ins.y).attr("width", ins.w).attr("height", ins.h);
+  g.append("rect").attr("x", ins.x + 5).attr("y", ins.y + 5).attr("width", ins.w).attr("height", ins.h).attr("fill", "rgba(36,32,27,.18)");
+  const inner = g.append("g").attr("clip-path", "url(#inset-clip)");
+  inner.append("rect").attr("x", ins.x).attr("y", ins.y).attr("width", ins.w).attr("height", ins.h).attr("fill", "var(--sea)");
+  const land = { type: "FeatureCollection", features: canProvs };
+  seaLines(inner.append("g"), pathC, land);
+  inner.append("g").selectAll("path").data(canProvs).join("path").attr("d", pathC).attr("fill", "var(--land)");
+  inner.append("path").datum(land).attr("class", "ns").attr("d", pathC).attr("stroke", "#4F8FBD").attr("stroke-width", 0.9);
+  for (const c of ["lakes", "rivers", "rail", "roads"]) inner.append("g").attr("class", c);
+  drawLines(pathC, (f) => { const b = d3.geoBounds(f); return b[1][0] < -13 && b[0][1] < 30; }, inner);
+  inner.append("text").attr("class", "water-lbl").attr("x", ins.x + ins.w * 0.5).attr("y", ins.y + ins.h - 14).attr("text-anchor", "middle").text("OCÉANO ATLÁNTICO");
+  g.append("rect").attr("class", "ns").attr("x", ins.x).attr("y", ins.y).attr("width", ins.w).attr("height", ins.h)
+    .attr("stroke", "var(--ink)").attr("stroke-width", 1.6);
+  g.append("rect").attr("x", ins.x).attr("y", ins.y).attr("width", 150).attr("height", 22).attr("fill", "var(--ink)");
+  g.append("text").attr("x", ins.x + 9).attr("y", ins.y + 15.5).attr("fill", "var(--paper)")
+    .style("font", "700 12px Oswald").style("letter-spacing", ".2em").text("ISLAS CANARIAS");
+}
+
+function drawGrid() {
+  const g = d3.select("#grid"); g.selectAll("*").remove();
+  const { W, H } = S, cw = W / COLS.length, rh = H / ROWS;
+  for (let c = 1; c < COLS.length; c++) g.append("line").attr("class", "ns").attr("x1", c * cw).attr("x2", c * cw).attr("y1", 0).attr("y2", H).attr("stroke", "#6F95B5").attr("stroke-width", 0.7).attr("opacity", 0.5);
+  for (let r = 1; r < ROWS; r++) g.append("line").attr("class", "ns").attr("y1", r * rh).attr("y2", r * rh).attr("x1", 0).attr("x2", W).attr("stroke", "#6F95B5").attr("stroke-width", 0.7).attr("opacity", 0.5);
+}
+// Las letras y los números viven en la franja del marco y siguen a la cuadrícula al hacer zoom:
+// muy ampliado, una sola columna ocupa toda la hoja y su letra queda centrada.
+function updateGridLabels() {
+  const t = S.t, { W, H } = S, cw = W / COLS.length, rh = H / ROWS, g = d3.select("#band-lbls");
+  const cells = [];
+  for (let c = 0; c < COLS.length; c++) {
+    const a = t.applyX(c * cw), b = t.applyX((c + 1) * cw);
+    if (b <= BAND || a >= W - BAND) continue;
+    cells.push({ kind: "c", n: c, a: Math.max(a, BAND), b: Math.min(b, W - BAND), text: COLS[c], edge: a > BAND ? a : null });
+  }
+  for (let r = 0; r < ROWS; r++) {
+    const a = t.applyY(r * rh), b = t.applyY((r + 1) * rh);
+    if (b <= BAND || a >= H - BAND) continue;
+    cells.push({ kind: "r", n: r, a: Math.max(a, BAND), b: Math.min(b, H - BAND), text: String(r + 1), edge: a > BAND ? a : null });
+  }
+  g.selectAll("*").remove();
+  for (const d of cells) {
+    const mid = (d.a + d.b) / 2, shade = d.n % 2 ? "rgba(111,149,181,.16)" : "rgba(255,255,255,0)";
+    if (d.kind === "c") {
+      for (const y of [3, H - BAND]) g.append("rect").attr("x", d.a).attr("y", y).attr("width", d.b - d.a).attr("height", BAND - 3).attr("fill", shade);
+      if (d.edge != null) for (const [y1, y2] of [[3, BAND], [H - BAND, H - 3]]) g.append("line").attr("x1", d.edge).attr("x2", d.edge).attr("y1", y1).attr("y2", y2).attr("stroke", "var(--ink)").attr("stroke-width", 1);
+      if (d.b - d.a > 18) for (const y of [BAND / 2 + 8, H - BAND / 2 + 8]) g.append("text").attr("class", "band-lbl").attr("x", mid).attr("y", y).attr("text-anchor", "middle").text(d.text);
+    } else {
+      for (const x of [3, W - BAND]) g.append("rect").attr("x", x).attr("y", d.a).attr("width", BAND - 3).attr("height", d.b - d.a).attr("fill", shade);
+      if (d.edge != null) for (const [x1, x2] of [[3, BAND], [W - BAND, W - 3]]) g.append("line").attr("x1", x1).attr("x2", x2).attr("y1", d.edge).attr("y2", d.edge).attr("stroke", "var(--ink)").attr("stroke-width", 1);
+      if (d.b - d.a > 22) for (const x of [BAND / 2 + 1.5, W - BAND / 2 - 1.5]) g.append("text").attr("class", "band-lbl").attr("x", x).attr("y", mid + 7).attr("text-anchor", "middle").text(d.text);
+    }
+  }
+}
+const gridRef = (i) => {
+  const [x, y] = S.xy[i];
+  return `${COLS[Math.max(0, Math.min(COLS.length - 1, Math.floor(x / (S.W / COLS.length))))]}-${Math.max(1, Math.min(ROWS, Math.floor(y / (S.H / ROWS)) + 1))}`;
+};
+
+// marco fijo: filete doble, rosa de los vientos y escala
+function drawChrome() {
+  const g = d3.select("#chrome"); g.selectAll("*").remove();
+  const { W, H } = S;
+  // la franja tapa el mapa: es el margen blanco de la hoja
+  g.append("path").attr("fill-rule", "evenodd").attr("fill", "#F4ECD4")
+    .attr("d", `M0,0H${W}V${H}H0Z M${BAND},${BAND}V${H - BAND}H${W - BAND}V${BAND}Z`);
+  g.append("g").attr("id", "band-lbls");
+  g.append("rect").attr("x", 2.5).attr("y", 2.5).attr("width", W - 5).attr("height", H - 5).attr("fill", "none").attr("stroke", "var(--ink)").attr("stroke-width", 2.2);
+  g.append("rect").attr("x", BAND).attr("y", BAND).attr("width", W - 2 * BAND).attr("height", H - 2 * BAND).attr("fill", "none").attr("stroke", "var(--ink)").attr("stroke-width", 1.4);
+  const c = g.append("g").attr("transform", `translate(${W - BAND - 44},${BAND + 50})`);
+  c.append("circle").attr("r", 26).attr("fill", "rgba(247,240,219,.85)").attr("stroke", "var(--ink)").attr("stroke-width", 1);
+  c.append("path").attr("d", "M0,-24 L6,0 L0,-4 L-6,0 Z").attr("fill", "var(--red)").attr("stroke", "var(--ink)").attr("stroke-width", 0.8);
+  c.append("path").attr("d", "M0,24 L6,0 L0,4 L-6,0 Z").attr("fill", "#fff").attr("stroke", "var(--ink)").attr("stroke-width", 0.8);
+  c.append("text").attr("y", -30).attr("text-anchor", "middle").style("font", "700 13px Oswald").text("N");
+  const sb = g.append("g").attr("id", "scalebar").attr("transform", `translate(${BAND + 16},${H - BAND - 30})`);
+  sb.append("rect").attr("class", "bar1").attr("height", 5).attr("fill", "var(--ink)");
+  sb.append("rect").attr("class", "bar2").attr("height", 5).attr("fill", "#fff").attr("stroke", "var(--ink)").attr("stroke-width", 1);
+  sb.append("text").attr("class", "t0").attr("y", -5).style("font", "11px 'Roboto Condensed'").text("0");
+  sb.append("text").attr("class", "t1").attr("y", -5).attr("text-anchor", "middle").style("font", "11px 'Roboto Condensed'");
+  sb.append("text").attr("class", "t2").attr("y", -5).attr("text-anchor", "end").style("font", "11px 'Roboto Condensed'");
+  sb.append("text").attr("y", 18).style("font", "10px 'Roboto Condensed'").style("letter-spacing", ".12em").text("KILÓMETROS");
+}
+function updateScale() {
+  // píxeles por kilómetro en el centro de la península a la escala actual
+  const a = S.proj([-3.7, 40.4]), b = S.proj([-3.7, 41.4]);
+  const ppk = (Math.hypot(a[0] - b[0], a[1] - b[1]) / 111.2) * S.t.k;
+  const nice = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500];
+  const km = nice.find((n) => n * ppk >= 55) || 500;
+  const w = km * ppk;
+  const sb = d3.select("#scalebar");
+  sb.select(".bar1").attr("width", w);
+  sb.select(".bar2").attr("x", w).attr("width", w);
+  sb.select(".t1").attr("x", w).text(km);
+  sb.select(".t2").attr("x", 2 * w).text(2 * km);
+}
+
+function drawLegend() {
+  const items = [
+    ["Autopista o autovía", (s) => road(s, "auto")], ["Carretera nacional", (s) => road(s, "nac")],
+    ["Carretera comarcal", (s) => road(s, "com")], ["Otras carreteras", (s) => road(s, "loc")],
+    ["Ferrocarril", (s) => { s.append("line").attr("x1", 2).attr("x2", 34).attr("y1", 7).attr("y2", 7).attr("stroke", "#2E2A26").attr("stroke-width", 0.9); s.append("line").attr("x1", 2).attr("x2", 34).attr("y1", 7).attr("y2", 7).attr("stroke", "#2E2A26").attr("stroke-width", 4).attr("stroke-dasharray", "0.9 6"); }],
+    ["Límite de provincia", (s) => s.append("line").attr("x1", 2).attr("x2", 34).attr("y1", 7).attr("y2", 7).attr("stroke", "#8B5A9C").attr("stroke-width", 1.2).attr("stroke-dasharray", "5 2 1.5 2")],
+    ["Capital de provincia", (s) => { s.append("circle").attr("cx", 18).attr("cy", 7).attr("r", 4.4).attr("fill", "#fff").attr("stroke", "#24201B").attr("stroke-width", 1.6); s.append("circle").attr("cx", 18).attr("cy", 7).attr("r", 1.7).attr("fill", "#D8362A"); }],
+    ["Más de 50.000 hab.", (s) => s.append("circle").attr("cx", 18).attr("cy", 7).attr("r", 3.1).attr("fill", "#24201B")],
+    ["Río o embalse", (s) => s.append("path").attr("d", "M2,9 C10,3 18,11 26,5 S34,7 34,7").attr("fill", "none").attr("stroke", "#3E8DC2").attr("stroke-width", 1.3)],
+    ["Marca del copiloto", (s) => { s.append("ellipse").attr("cx", 18).attr("cy", 7).attr("rx", 14).attr("ry", 5.5).attr("fill", "rgba(255,234,0,.62)"); s.append("ellipse").attr("cx", 18).attr("cy", 7).attr("rx", 9).attr("ry", 6).attr("fill", "none").attr("stroke", "#D1221A").attr("stroke-width", 2); }],
+  ];
+  function road(s, c) {
+    for (const layer of ["casing", "fill", "center"]) {
+      const st = ROAD[c][layer]; if (!st) continue;
+      s.append("line").attr("x1", 2).attr("x2", 34).attr("y1", 7).attr("y2", 7).attr("stroke", st[0]).attr("stroke-width", st[1]).attr("stroke-linecap", "round");
+    }
+  }
+  const box = d3.select("#legend"); box.selectAll("*").remove();
+  for (const [name, draw] of items) {
+    const d = box.append("div");
+    draw(d.append("svg").attr("width", 36).attr("height", 14));
+    d.append("span").text(name);
+  }
+}
+
+// ------------------------------------------------------------------ zoom y rótulos
+function onZoom(ev) {
+  const t = (S.t = ev.transform);
+  gz.attr("transform", t);
+  svg.style("--k", t.k);
+  // los rótulos se mueven con el mapa mientras dura el gesto y se recolocan al acabar
+  const d = t.translate(0, 0);
+  const lt = S.labelT;
+  d3.select("#labels").attr("transform", `translate(${t.x - lt.x * t.k / lt.k},${t.y - lt.y * t.k / lt.k}) scale(${t.k / lt.k})`);
+  drawMarks();
+  updateScale();
+  updateGridLabels();
+  d3.select("#hover").selectAll("*").remove();          // el rótulo flotante no puede quedarse donde estaba
+}
+function layoutLabels() {
+  const t = S.t, k = t.k, { W, H } = S;
+  S.labelT = t;
+  S.labeled = new Set();
+  const fz = Math.max(0.72, Math.min(1, W / 1150));          // en pantallas estrechas, rótulos más pequeños
+  const g = d3.select("#labels").attr("transform", null);
+  g.selectAll("*").remove();
+  const minPop = k < 1.6 ? 1e9 : k < 3 ? 40000 : k < 6 ? 9000 : k < 12 ? 2500 : k < 24 ? 700 : 0;
+  const cand = [];
+  for (let i = 0; i < S.places.length; i++) {
+    const cap = S.capital.has(i);
+    if (!cap && S.places[i][2] < minPop && i !== S.sel) continue;
+    const [x, y] = t.apply(S.xy[i]);
+    if (x < -20 || y < -10 || x > W + 20 || y > H + 10) continue;
+    cand.push([i, x, y, cap]);
+  }
+  cand.sort((a, b) => (b[0] === S.sel) - (a[0] === S.sel) || b[3] - a[3] || S.places[b[0]][2] - S.places[a[0]][2]);
+  const boxes = [];
+  // no tapar el recuadro de Canarias con rótulos de la península, ni la rosa ni la escala
+  const ins = S.inset, [ix, iy] = t.apply([ins.x, ins.y]);
+  boxes.push([ix, iy, ix + ins.w * k, iy + ins.h * k], [W - BAND - 90, BAND, W, BAND + 100], [0, H - BAND - 55, BAND + 210, H]);
+  let n = 0;
+  for (const [i, x, y, cap] of cand) {
+    if (n > 320) break;
+    const p = S.places[i], big = p[2] >= 50000, sel = i === S.sel;
+    const fs = fz * (sel ? 15 : cap ? 12.5 : big ? 11.8 : p[2] >= 10000 ? 11.2 : 10.5);
+    const text = cap ? p[0].toUpperCase() : p[0];
+    const w = text.length * fs * (cap ? 0.6 : 0.5), h = fs;
+    const inInset = S.can[i];
+    const spots = [[x + 6, y + h * 0.35, "start"], [x - 6, y + h * 0.35, "end"], [x - w / 2, y - 7, "start"], [x - w / 2, y + h + 5, "start"]];
+    for (const [lx, ly, anchor] of spots) {
+      const x0 = anchor === "end" ? lx - w : lx, bb = [x0 - 1, ly - h, x0 + w + 1, ly + 3];
+      const outside = bb[0] < BAND + 3 || bb[2] > W - BAND - 3 || bb[1] < BAND + 3 || bb[3] > H - BAND - 3;
+      const overlaps = outside || boxes.some((b, bi) => !(bb[2] < b[0] || bb[0] > b[2] || bb[3] < b[1] || bb[1] > b[3]) && !(bi === 0 && inInset));
+      if (!overlaps || sel) {
+        boxes.push(bb);
+        S.labeled.add(i);
+        g.append("text").attr("class", `lbl${cap ? " cap" : big ? " big" : ""}${sel ? " sel" : ""}`).attr("data-i", i)
+          .attr("x", lx).attr("y", ly).attr("text-anchor", anchor).style("font-size", `${fs}px`).text(text);
+        n++;
+        break;
+      }
+    }
+  }
+}
+
+// ------------------------------------------------------------------ marcas del copiloto
+function mulberry(seed) { return () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function renderResults() {
+  const probs = S.probs;
+  S.ranked = Object.entries(probs).map(([i, p]) => [+i, p]).sort((a, b) => b[1] - a[1]);
+  drawMarks();
+  const top = S.ranked.slice(0, 9);
+  const ol = d3.select("#index");
+  ol.selectAll("*").remove();
+  $("hint").hidden = top.length > 0;
+  top.forEach(([i, p], r) => {
+    const pl = S.places[i];
+    const li = ol.append("li").classed("minor", r >= 5).classed("on", i === S.sel).on("click", () => select(i))
+      .on("mouseenter", () => d3.selectAll(`.mk[data-i="${i}"]`).classed("pulse", true))
+      .on("mouseleave", () => d3.selectAll(".mk").classed("pulse", false));
+    li.append("span").attr("class", "n").text(r + 1);
+    li.append("span").attr("class", "nm").html(`${esc(pl[0])} <small>${esc(pl[1])}</small>`);
+    li.append("span").attr("class", "dots");
+    li.append("span").attr("class", "ref").text(gridRef(i));
+    li.append("span").attr("class", "pc").text(`${Math.max(1, Math.round(p * 100))}%`);
+  });
+}
+// Trazo de rotulador: la línea central da algo más de una vuelta, ovalada y torcida, y se pinta
+// como una forma de grosor variable (más tinta al apoyar, se afina al levantar y se abre en la cola).
+function markerShape(cx, cy, r, seed, w0) {
+  const rnd = mulberry(seed), n = 46;
+  const a0 = -0.7 + rnd() * 0.6, turns = 1.1 + rnd() * 0.12;
+  const ex = 1.06 + rnd() * 0.14, ey = 0.84 + rnd() * 0.12, tilt = (rnd() - 0.5) * 0.6;
+  const pts = [];
+  for (let i = 0; i <= n; i++) {
+    const u = i / n, a = a0 - u * TAU * turns;          // antihorario, como casi todo el mundo
+    let rr = r * (1 + (rnd() - 0.5) * 0.06 + 0.06 * Math.sin(u * 8 + seed));
+    if (u > 0.84) rr *= 1 + (u - 0.84) * 1.3;            // la cola se abre al levantar el rotulador
+    const x = Math.cos(a) * rr * ex, y = Math.sin(a) * rr * ey;
+    pts.push([cx + x * Math.cos(tilt) - y * Math.sin(tilt), cy + x * Math.sin(tilt) + y * Math.cos(tilt)]);
+  }
+  const left = [], right = [];
+  for (let i = 0; i <= n; i++) {
+    const u = i / n, o = pts[Math.max(0, i - 1)], q = pts[Math.min(n, i + 1)];
+    const dx = q[0] - o[0], dy = q[1] - o[1], L = Math.hypot(dx, dy) || 1, nx = -dy / L, ny = dx / L;
+    const press = (1 + 0.35 * Math.exp(-u * 25)) * (u > 0.78 ? Math.max(0.2, 1 - (u - 0.78) * 3.6) : 1);
+    const w = w0 * press * (1 + (rnd() - 0.5) * 0.22);
+    left.push([pts[i][0] + nx * w / 2, pts[i][1] + ny * w / 2]);
+    right.push([pts[i][0] - nx * w / 2, pts[i][1] - ny * w / 2]);
+  }
+  const line = d3.line().curve(d3.curveCatmullRom.alpha(0.5));
+  return { d: line(left) + "L" + line(right.reverse()).slice(1) + "Z", start: pts[0] };
+}
+function drawMarks() {
+  const t = S.t, hl = d3.select("#hls"), mk = d3.select("#marks");
+  // fosforito: una pasada corta en diagonal, con la punta biselada del subrayador
+  const lit = S.ranked.filter(([, p]) => p >= 0.008).slice(0, 80);
+  hl.selectAll("path").data(lit, (d) => d[0]).join("path").attr("class", "hl")
+    .attr("d", (d) => {
+      const [x, y] = t.apply(S.xy[d[0]]), rnd = mulberry(d[0] * 7 + 1);
+      const L = 12 + 34 * Math.sqrt(d[1]), a = -0.22 + (rnd() - 0.5) * 0.25, dx = Math.cos(a) * L / 2, dy = Math.sin(a) * L / 2;
+      return `M${x - dx},${y - dy + 1.5}L${x + dx},${y + dy}`;
+    })
+    .attr("stroke-width", (d) => 7 + 12 * Math.sqrt(d[1]));
+  const top = S.ranked.slice(0, 5), pmax = top.length ? top[0][1] : 1;
+  const g = mk.selectAll("g.mk").data(top, (d) => d[0]).join((e) => {
+    const gg = e.append("g").attr("class", "mk");
+    gg.append("path").attr("class", "mark2");
+    gg.append("path").attr("class", "mark");
+    gg.append("circle").attr("class", "mark-blob");
+    gg.append("text").attr("class", "mark-n");
+    return gg;
+  });
+  g.attr("data-i", (d) => d[0]).each(function (d) {
+    const [x, y] = t.apply(S.xy[d[0]]), r = 11 + 9 * Math.sqrt(d[1] / pmax), rnd = mulberry(d[0] * 13 + 5);
+    const first = markerShape(x, y, r, d[0], 2.9), second = markerShape(x + 0.8, y - 0.6, r * 1.05, d[0] + 999, 1.4);
+    const sel = d3.select(this);
+    sel.select(".mark").attr("d", first.d);
+    sel.select(".mark2").attr("d", second.d);
+    sel.select(".mark-blob").attr("cx", first.start[0]).attr("cy", first.start[1]).attr("r", 2.1);
+    const ang = -0.8 + (rnd() - 0.5) * 0.4, nx = x + Math.cos(ang) * (r * 1.2 + 5), ny = y + Math.sin(ang) * (r * 1.05 + 7);
+    sel.select(".mark-n").attr("transform", `translate(${nx},${ny}) rotate(${(rnd() - 0.6) * 22})`)
+      .text(S.ranked.findIndex((q) => q[0] === d[0]) + 1);
+  });
+}
+
+// ------------------------------------------------------------------ pulsar en el mapa: el pueblo más cercano
+function pickAt(mx, my, radius = 13) {
+  const t = S.t;
+  // primero los marcados por el copiloto: basta con pulsar dentro de su círculo
+  const top = S.ranked.slice(0, 5), pmax = top.length ? top[0][1] : 1;
+  for (const [i, p] of top) {
+    const [x, y] = t.apply(S.xy[i]);
+    if (Math.hypot(mx - x, my - y) <= 14 + 9 * Math.sqrt(p / pmax)) return i;
+  }
+  // entre los que quedan bajo el dedo, gana lo que una persona ve y quiere pulsar: lo rotulado,
+  // las capitales y lo poblado, no el pueblecito que por casualidad está a un píxel
+  const [bx, by] = t.invert([mx, my]), rb = radius / t.k;
+  let best = null, bestScore = Infinity;
+  S.qt.visit((node, x0, y0, x1, y1) => {
+    if (!node.length) {
+      let d = node;
+      do {
+        const i = d.data, [x, y] = S.xy[i], dist = Math.hypot(x - bx, y - by) * t.k;
+        if (dist <= radius) {
+          const bonus = (S.capital.has(i) ? 16 : 0) + (S.labeled && S.labeled.has(i) ? 10 : 0) + Math.log10(Math.max(10, S.places[i][2])) * 1.5;
+          if (dist - bonus < bestScore) { bestScore = dist - bonus; best = i; }
+        }
+      } while ((d = d.next));
+    }
+    return x0 > bx + rb || x1 < bx - rb || y0 > by + rb || y1 < by - rb;
+  });
+  return best;
+}
+function setupPicking() {
+  // Toque o clic detectado a mano con eventos de puntero (valen igual para ratón y dedo): el zoom de d3
+  // anula el clic en cuanto el dedo o el ratón se mueven un poco, y en móvil casi siempre se mueven.
+  const node = svg.node();
+  let down = null;
+  node.addEventListener("pointerdown", (ev) => {
+    down = ev.isPrimary ? { x: ev.clientX, y: ev.clientY, t: performance.now(), target: ev.target } : null;
+  }, true);
+  node.addEventListener("pointercancel", () => { down = null; }, true);
+  node.addEventListener("pointerup", (ev) => {
+    if (!down || !ev.isPrimary) return;
+    const moved = Math.hypot(ev.clientX - down.x, ev.clientY - down.y), dt = performance.now() - down.t, tgt = down.target;
+    down = null;
+    if (moved > (ev.pointerType === "touch" ? 12 : 8) || dt > 800) return;
+    const lbl = tgt.closest && tgt.closest(".lbl");
+    const [mx, my] = d3.pointer(ev, node);
+    const i = lbl ? +lbl.getAttribute("data-i") : pickAt(mx, my, ev.pointerType === "touch" ? 24 : 14);
+    report("toque", { tipo: ev.pointerType, x: Math.round(mx), y: Math.round(my), k: +S.t.k.toFixed(2), pueblo: i == null ? null : S.places[i][0] });
+    if (i != null && !Number.isNaN(i)) select(i);
+  }, true);
+  let pending = null;
+  svg.on("mousemove.pick", (ev) => {
+    const at = d3.pointer(ev, svg.node());
+    if (pending) return;
+    pending = requestAnimationFrame(() => {
+      pending = null;
+      const i = pickAt(...at, 10);
+      svg.classed("over-place", i != null);
+      const h = d3.select("#hover").selectAll("text").data(i == null ? [] : [i]).join("text").attr("class", "hover-lbl");
+      if (i != null) {
+        const [x, y] = S.t.apply(S.xy[i]);
+        h.attr("x", x + 8).attr("y", y - 8).text(`${S.places[i][0]} · ${fmt.format(S.places[i][2])} hab.`);
+      }
+    });
+  });
+  svg.on("mouseleave.pick", () => { d3.select("#hover").selectAll("*").remove(); svg.classed("over-place", false); });
+}
+
+// ------------------------------------------------------------------ elegir un municipio: vuelo, término municipal y ficha
+async function loadMunis() {
+  if (!S.topo) {
+    S.topo = await fetch("municipios-topo.json").then((r) => r.json());
+    const geoms = S.topo.objects.municipalities.geometries;
+    S.geomById = new Map(geoms.map((g, i) => [g.id, i]));
+    S.nbrs = topojson.neighbors(geoms);
+  }
+}
+async function select(i) {
+  S.sel = i;
+  showFicha(i);
+  renderResults();
+  const t0 = performance.now();
+  if (!S.topo) $("status").textContent = "Desplegando el plano de detalle…";
+  try { await loadMunis(); } catch (e) { report("error", { donde: "términos municipales", msg: String(e) }); }
+  if ($("status").textContent.startsWith("Desplegando")) $("status").textContent = "";
+  report("elegido", { pueblo: S.places[i][0], ms_planos: Math.round(performance.now() - t0), ancho: S.W, alto: S.H });
+  drawMuni(i);
+  // el mapa general se acerca solo lo justo para dar contexto; el detalle va en la hoja del IGN
+  const { W, H } = S, box = detailBox();
+  // píxeles por km en el mapa general; Canarias va en su recuadro, a otra escala
+  const pr = S.can[i] ? S.projCan : S.proj, ref = S.can[i] ? [-15.5, 28.1] : [-3.7, 40.4];
+  const a = pr(ref), b = pr([ref[0], ref[1] + 1]), ppk = Math.hypot(a[0] - b[0], a[1] - b[1]) / 111.2;
+  const freeW = box.narrow ? W : box.x, fx = box.narrow ? W / 2 : box.x / 2;
+  const k = S.can[i] ? Math.max(1.5, Math.min(2.6, freeW / (160 * ppk))) : Math.max(2.5, Math.min(14, freeW / (120 * ppk)));
+  const t = d3.zoomIdentity.translate(fx, H / 2).scale(k).translate(-S.xy[i][0], -S.xy[i][1]);
+  svg.transition().duration(1300).ease(d3.easeCubicInOut).call(zoom.transform, t);
+  openDetail(i);
+}
+function drawMuni(i) {
+  const g = d3.select("#munis"); g.selectAll("*").remove();
+  if (!S.topo) return null;
+  const idx = S.geomById.get(S.places[i][5]);
+  if (idx == null) return null;
+  const geoms = S.topo.objects.municipalities.geometries;
+  const path = S.can[i] ? S.pathC : S.path;
+  const me = topojson.feature(S.topo, geoms[idx]);
+  const nb = S.nbrs[idx].map((j) => topojson.feature(S.topo, geoms[j]));
+  g.selectAll("path.nb").data(nb).join("path").attr("class", "ns nb").attr("d", path)
+    .style("fill", "rgba(255,255,255,.18)").attr("stroke", "var(--prov)").attr("stroke-width", 0.9).attr("stroke-dasharray", "3 2");
+  g.append("path").datum(me).attr("d", path).attr("fill", "var(--hl)").style("mix-blend-mode", "multiply");
+  g.append("path").datum(me).attr("class", "ns").attr("d", path).attr("stroke", "var(--marker)").attr("stroke-width", 2.4)
+    .attr("stroke-dasharray", "7 3").attr("stroke-linejoin", "round");
+  return path.bounds(me);
+}
+function showNote(i) {
+  const box = detailBox(), el = $("note");
+  if (!box.note) { el.hidden = true; return false; }
+  const [name, prov, pop, , , , elev, hours, coast, reach, rasgos] = S.places[i];
+  const where = reach === "island" ? "isla, en avión o barco" : reach === "africa" ? "norte de África, en barco o avión" : `${String(hours).replace(".", ",")} h en coche`;
+  const pr = S.probs[i];
+  el.innerHTML = `<div class="n-name">${esc(name)}<small>${esc(prov)} · cuadrícula ${gridRef(i)}</small></div>
+    ${pr ? `<div class="n-match">¡Encaja con lo que buscas: ${Math.max(1, Math.round(pr * 100))} %!</div>` : ""}
+    <dl>
+      <dt>Habitantes</dt><dd>${fmt.format(pop)}</dd>
+      <dt>Altitud</dt><dd>${elev != null ? fmt.format(elev) + " m" : "–"}</dd>
+      <dt>Desde Madrid</dt><dd>${where}</dd>
+      <dt>Costa</dt><dd>${coast ? "sí" : "interior"}</dd>
+    </dl>
+    <p class="n-rasgos">${esc((rasgos || "Sin rasgos destacados en su ficha.").replace(/\*/g, ""))}.</p>
+    <button class="n-back" type="button">← volver al mapa general</button>
+    <i class="tape"></i>`;
+  Object.assign(el.style, { left: `${box.note.x}px`, top: `${box.note.y}px`, width: `${box.note.w}px`, height: `${box.note.h}px` });
+  el.hidden = false;
+  el.style.animation = "none"; void el.offsetHeight; el.style.animation = "";
+  el.querySelector(".n-back").onclick = back;
+  // si el texto no cabe en la ficha, se achica la letra lo justo
+  let fs = 22;
+  el.style.fontSize = `${fs}px`; el.style.lineHeight = "28px";
+  while (el.scrollHeight > el.clientHeight + 2 && fs > 14) { fs -= 1; el.style.fontSize = `${fs}px`; }
+  return true;
+}
+function showFicha(i) {
+  if (showNote(i)) { $("sec-ficha").hidden = true; return; }
+  const p = S.places[i];
+  const [name, prov, pop, , , ine, elev, hours, coast, reach, rasgos] = p;
+  const where = reach === "island" ? "Isla (avión o barco)" : reach === "africa" ? "Norte de África (barco o avión)" : `${String(hours).replace(".", ",")} h en coche`;
+  const pr = S.probs[i];
+  const f = $("sec-ficha");
+  f.hidden = false;
+  f.innerHTML = `<h3>Ficha de la población</h3>
+    <div class="name">${esc(name)}</div><div class="prov">${esc(prov)} · cuadrícula ${gridRef(i)}</div>
+    ${pr ? `<div class="match">Encaja con tu búsqueda: ${Math.max(1, Math.round(pr * 100))} %</div>` : ""}
+    <table>
+      <tr><td>Habitantes</td><td>${fmt.format(pop)}</td></tr>
+      <tr><td>Altitud</td><td>${elev != null ? fmt.format(elev) + " m" : "–"}</td></tr>
+      <tr><td>Desde Madrid</td><td>${where}</td></tr>
+      <tr><td>Costa</td><td>${coast ? "Sí" : "Interior"}</td></tr>
+    </table>
+    <p>${esc((rasgos || "Sin rasgos destacados en su ficha.").replace(/\*/g, ""))}</p>
+    <button class="btn" id="back">← Mapa general</button>`;
+  $("back").onclick = back;
+  f.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+function back() {
+  S.sel = null;
+  $("sec-ficha").hidden = true;
+  $("detail").hidden = true;
+  $("note").hidden = true;
+  $("polaroid").hidden = true; PH.gen++;
+  d3.select("#munis").selectAll("*").remove();
+  renderResults();
+  svg.transition().duration(1300).ease(d3.easeCubicInOut).call(zoom.transform, d3.zoomIdentity);
+}
+window.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.sel != null) back(); });
+
+
+// ------------------------------------------------------------------ plano de detalle: la hoja del MTN del IGN
+const MTN = (z, c, r) => `https://www.ign.es/wmts/mapa-raster?service=WMTS&request=GetTile&version=1.0.0&format=image/jpeg&layer=MTN&style=default&tilematrixset=GoogleMapsCompatible&tilematrix=${z}&tilerow=${r}&tilecol=${c}`;
+const D = { t: d3.zoomIdentity, base: null, zoom: null, gen: 0 };
+function detailBox() {
+  const { W, H } = S, narrow = W < 760;
+  const w = narrow ? W - 20 : Math.min(Math.max(W * 0.55, 440), 1040);
+  if (narrow) return { w, h: H - 20, x: 10, y: 10, narrow, note: null };
+  const x = W - w - BAND - 26, y = BAND + 16, bottom = H - BAND - 14;
+  const noteH = Math.min(330, Math.max(196, H * 0.27));
+  const h = Math.max(300, bottom - y - noteH - 16);
+  return { w, h, x, y, narrow, note: { x: x + 14, y: y + h + 16, w: w - 28, h: bottom - (y + h + 16) } };
+}
+function openDetail(i) {
+  const idx = S.geomById && S.geomById.get(S.places[i][5]);
+  if (idx == null) return;
+  const geoms = S.topo.objects.municipalities.geometries;
+  const me = topojson.feature(S.topo, geoms[idx]);
+  const nb = S.nbrs[idx].map((j) => topojson.feature(S.topo, geoms[j]));
+  const box = detailBox(), el = $("detail");
+  Object.assign(el.style, { left: `${box.x}px`, top: `${box.y}px`, width: `${box.w}px`, height: `${box.h}px` });
+  el.hidden = false;
+  el.style.animation = "none"; void el.offsetHeight; el.style.animation = "";
+  $("d-name").innerHTML = `${esc(S.places[i][0])}<small>${esc(S.places[i][1].toUpperCase())}</small>`;
+  const body = el.querySelector(".d-body").getBoundingClientRect(), mw = body.width, mh = body.height;
+  // Mercator como las teselas, con un zoom fraccionario para que el término ocupe unos dos tercios
+  const bb = d3.geoBounds(me);
+  const merc = (lon, lat) => [(lon + 180) / 360, (1 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / Math.PI) / 2];
+  const [ax, ay] = merc(bb[0][0], bb[1][1]), [bx, by] = merc(bb[1][0], bb[0][1]);
+  const zf = Math.max(9, Math.min(15.3, Math.log2(Math.min((0.66 * mw) / (256 * (bx - ax)), (0.66 * mh) / (256 * (by - ay))))));
+  const world = 256 * 2 ** zf, ox = mw / 2 - ((ax + bx) / 2) * world, oy = mh / 2 - ((ay + by) / 2) * world;
+  const proj = d3.geoMercator().scale(world / (2 * Math.PI)).translate([ox + world / 2, oy + world / 2]);
+  D.base = { zf, ox, oy, world, mw, mh, lat: (bb[0][1] + bb[1][1]) / 2, town: proj([S.places[i][4], S.places[i][3]]), seed: i };
+  D.gen++;
+  const path = d3.geoPath(proj), over = d3.select("#d-over");
+  over.selectAll("*").remove();
+  d3.select("#d-tiles").selectAll("*").remove();
+  $("d-msg").textContent = "Pidiendo la hoja al Instituto Geográfico Nacional…";
+  // fuera del término, el papel se vela; dentro queda limpio
+  over.append("path").attr("fill-rule", "evenodd").attr("fill", "rgba(246,237,210,.5)")
+    .attr("d", `M-1e5,-1e5H1e5V1e5H-1e5Z ${path(me)}`);
+  over.selectAll("path.nb").data(nb).join("path").attr("class", "nb").attr("d", path).attr("fill", "none")
+    .attr("stroke", "#8B5A9C").attr("stroke-width", 1.3).attr("stroke-dasharray", "6 3 1.5 3").attr("vector-effect", "non-scaling-stroke").attr("opacity", 0.8);
+  over.append("path").datum(me).attr("d", path).attr("fill", "none").attr("stroke", "#FFF8E0").attr("stroke-width", 6).attr("vector-effect", "non-scaling-stroke").attr("opacity", 0.85);
+  over.append("path").datum(me).attr("d", path).attr("fill", "none").attr("stroke", "var(--marker)").attr("stroke-width", 3)
+    .attr("stroke-dasharray", "10 4").attr("stroke-linejoin", "round").attr("vector-effect", "non-scaling-stroke");
+  const dm = d3.select("#dmap");
+  if (!D.zoom) {
+    D.zoom = d3.zoom().scaleExtent([0.35, 24]).clickDistance(6)
+      .on("zoom", (ev) => { D.t = ev.transform; d3.select("#d-zoom").attr("transform", D.t); drawDetailMark(); drawDetailScale(); })
+      .on("end", () => renderTiles());
+    dm.call(D.zoom).on("dblclick.zoom", null);
+    $("d-close").onclick = back;
+  }
+  dm.call(D.zoom.transform, d3.zoomIdentity);
+  renderTiles();
+  showPhoto(i);
+  showFicha(i);
+}
+function drawDetailMark() {
+  const b = D.base; if (!b) return;
+  const [x, y] = D.t.apply(b.town), m = markerShape(x, y, 17, b.seed, 3.2);
+  const g = d3.select("#d-marks").selectAll("path").data([m]).join("path").attr("d", (d) => d.d).attr("fill", "var(--marker)").attr("opacity", 0.88).style("filter", "url(#ink)");
+}
+function drawDetailScale() {
+  const b = D.base; if (!b) return;
+  const mpp = (Math.cos((b.lat * Math.PI) / 180) * 2 * Math.PI * 6378137) / (b.world * D.t.k);
+  const nice = [25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000, 50000];
+  const m = nice.find((n) => n / mpp >= 55) || 50000, w = m / mpp;
+  const g = d3.select("#d-scale"); g.selectAll("*").remove();
+  g.append("rect").attr("x", 2).attr("y", 13).attr("width", w).attr("height", 5).attr("fill", "var(--ink)");
+  g.append("rect").attr("x", 2 + w).attr("y", 13).attr("width", w).attr("height", 5).attr("fill", "#fff").attr("stroke", "var(--ink)").attr("stroke-width", 1);
+  const lbl = (v) => (v >= 1000 ? `${String(v / 1000).replace(".", ",")} km` : `${v} m`);
+  g.append("text").attr("x", 2).attr("y", 10).style("font", "10.5px 'Roboto Condensed'").text("0");
+  g.append("text").attr("x", 2 + w).attr("y", 10).attr("text-anchor", "middle").style("font", "10.5px 'Roboto Condensed'").text(lbl(m));
+  g.append("text").attr("x", 2 + 2 * w).attr("y", 10).attr("text-anchor", "end").style("font", "10.5px 'Roboto Condensed'").text(lbl(2 * m));
+}
+function renderTiles() {
+  const b = D.base; if (!b) return;
+  const { zf, ox, oy, world, mw, mh } = b, t = D.t, gen = D.gen;
+  const dpr = window.devicePixelRatio || 1;
+  const z = Math.max(5, Math.min(18, Math.ceil(zf + Math.log2(t.k) + Math.log2(dpr) - 0.3)));
+  const ts = world / 2 ** z, n = 2 ** z;
+  const [x0, y0] = t.invert([0, 0]), [x1, y1] = t.invert([mw, mh]);
+  const c0 = Math.floor((x0 - ox) / ts), c1 = Math.floor((x1 - ox) / ts);
+  const r0 = Math.max(0, Math.floor((y0 - oy) / ts)), r1 = Math.min(n - 1, Math.floor((y1 - oy) / ts));
+  const tiles = [];
+  for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) tiles.push({ z, c: ((c % n) + n) % n, r, x: ox + c * ts, y: oy + r * ts, key: `${z}/${c}/${r}` });
+  if (!tiles.length || tiles.length > 180) return;
+  const g = d3.select("#d-tiles"), pad = 0.6 / t.k;
+  let loaded = 0, failed = 0;
+  const settle = () => {
+    if (gen !== D.gen || loaded + failed < tiles.length) return;
+    g.selectAll("image").filter((d) => d.z !== z).remove();          // la capa de antes, ya tapada
+    $("d-msg").textContent = failed === tiles.length ? "Sin conexión con el IGN: se ve solo el término municipal." : "";
+    report("plano", { pueblo: S.sel != null ? S.places[S.sel][0] : null, z, teselas: tiles.length, fallos: failed });
+  };
+  const have = new Set(g.selectAll("image").data().map((d) => d.key));
+  const fresh = tiles.filter((d) => !have.has(d.key));
+  loaded = tiles.length - fresh.length;
+  g.selectAll("image.new").classed("new", false);
+  for (const d of fresh) {
+    g.append("image").datum(d).attr("class", "new").attr("preserveAspectRatio", "none")
+      .attr("x", d.x - pad).attr("y", d.y - pad).attr("width", ts + 2 * pad).attr("height", ts + 2 * pad)
+      .on("load", () => { loaded++; settle(); }).on("error", () => { failed++; settle(); })
+      .attr("href", MTN(d.z, d.c, d.r));
+  }
+  settle();
+}
+
+// ------------------------------------------------------------------ la foto del pueblo (Wikimedia Commons)
+// Se pide al elegir el pueblo: la miniatura, el autor y la licencia vienen de la API de Commons.
+const PH = { gen: 0, cache: new Map() };
+async function commonsInfo(file, width) {
+  const key = `${file}|${width}`;
+  if (PH.cache.has(key)) return PH.cache.get(key);
+  const u = "https://commons.wikimedia.org/w/api.php?" + new URLSearchParams({
+    action: "query", titles: `File:${file}`, prop: "imageinfo", iiprop: "url|extmetadata", iiurlwidth: String(width),
+    iiextmetadatafilter: "Artist|LicenseShortName|ImageDescription", format: "json", origin: "*" });
+  const d = await fetch(u).then((r) => r.json());
+  const page = Object.values(d.query.pages)[0];
+  const ii = page.imageinfo && page.imageinfo[0];
+  if (!ii) throw new Error("sin imageinfo");
+  const text = (h) => { const e = document.createElement("div"); e.innerHTML = h || ""; return e.textContent.trim().replace(/\s+/g, " "); };
+  const m = ii.extmetadata || {};
+  const info = { src: ii.thumburl || ii.url, page: ii.descriptionurl, artist: text(m.Artist && m.Artist.value).slice(0, 60),
+    license: text(m.LicenseShortName && m.LicenseShortName.value), desc: text(m.ImageDescription && m.ImageDescription.value).slice(0, 140) };
+  PH.cache.set(key, info);
+  return info;
+}
+function placePolaroid() {
+  const el = $("polaroid"); if (el.hidden) return;
+  const big = el.classList.contains("big"), box = detailBox();
+  const w = Math.min(big ? 560 : box.narrow ? 190 : 290, S.W - 2 * BAND - 20);
+  el.style.width = `${w}px`;
+  // la altura se calcula (la anchura aún está en transición): foto cuadrada o 4:3, más el pie escrito
+  const h = (w - 26) * (big ? 0.75 : 1) + 13 + 74;
+  let x = box.narrow ? 16 : box.x - w * 0.74, y = box.narrow ? box.y + box.h - h - 8 : box.y + box.h - h - 44;
+  x = Math.max(BAND + 6, x); y = Math.max(BAND + 10, Math.min(S.H - BAND - h - 6, y));
+  Object.assign(el.style, { left: `${x}px`, top: `${y}px` });
+}
+async function showPhoto(i) {
+  const el = $("polaroid"), img = $("ph-img"), file = S.places[i][11], gen = ++PH.gen;
+  el.classList.remove("big");
+  if (!file) { el.hidden = true; return; }
+  el.hidden = false;
+  el.style.animation = "none"; void el.offsetHeight; el.style.animation = "";
+  el.classList.add("developing");
+  img.classList.remove("ready"); img.removeAttribute("src");
+  $("ph-cap").textContent = S.places[i][0];
+  $("ph-credit").textContent = "Revelando…";
+  placePolaroid();
+  try {
+    const dpr = window.devicePixelRatio || 1;
+    const info = await commonsInfo(file, Math.round(560 * dpr) > 640 ? 1280 : 640);
+    if (gen !== PH.gen) return;
+    img.alt = info.desc || `Foto de ${S.places[i][0]}`;
+    img.onload = () => { if (gen !== PH.gen) return; img.classList.add("ready"); setTimeout(() => el.classList.remove("developing"), 120); placePolaroid(); };
+    img.onerror = () => { if (gen === PH.gen) el.hidden = true; report("foto", { pueblo: S.places[i][0], error: "imagen" }); };
+    img.src = info.src;
+    $("ph-credit").innerHTML = `Foto: ${esc(info.artist || "autor desconocido")} · ${esc(info.license || "ver licencia")} · <a href="${esc(info.page)}" target="_blank" rel="noopener">Wikimedia Commons</a>`;
+  } catch (e) {
+    if (gen === PH.gen) el.hidden = true;
+    report("foto", { pueblo: S.places[i][0], error: String(e) });
+  }
+}
+$("polaroid").addEventListener("click", (ev) => {
+  if (ev.target.closest("a")) return;
+  $("polaroid").classList.toggle("big");
+  placePolaroid();
+});
+
+// ------------------------------------------------------------------ conexión con el copiloto
+let ws;
+function report(kind, data) {
+  try { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: "log", kind, data })); } catch (e) { /* sin registro no pasa nada */ }
+}
+window.addEventListener("error", (e) => report("error", { msg: e.message, linea: e.lineno }));
+window.addEventListener("unhandledrejection", (e) => report("error", { msg: String(e.reason) }));
+function connect() {
+  ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+  ws.onmessage = (ev) => receive(JSON.parse(ev.data));
+  ws.onopen = () => report("abierto", { navegador: navigator.userAgent, pantalla: `${innerWidth}x${innerHeight}@${devicePixelRatio}`, tactil: navigator.maxTouchPoints });
+  ws.onclose = () => setTimeout(connect, 1200);
+}
+let debounceT = null;
+function ask(text) {
+  clearTimeout(debounceT);
+  debounceT = setTimeout(() => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    S.seq++;
+    ws.send(JSON.stringify({ type: "ask", seq: S.seq, text }));
+    $("status").textContent = text.trim() ? "El copiloto está mirando el mapa…" : "";
+  }, 170);
+}
+function receive(msg) {
+  if (msg.type !== "answer" || msg.seq < S.last) return;
+  S.last = msg.seq;
+  S.probs = msg.text ? msg.probs || {} : {};
+  if (msg.latency_ms) $("lat").textContent = `${msg.latency_ms} ms`;
+  if (msg.brain) $("brain").textContent = msg.brain;
+  const notes = (msg.notes || []).join(" · ");
+  if (msg.seq === S.seq) $("status").textContent = msg.empty ? "Nada cumple lo que pides. Prueba a quitar algún límite."
+    : msg.text ? `Marcados en ${msg.latency_ms || "–"} ms${notes ? " · " + notes : ""}` : "";
+  renderResults();
+}
+
+function setupInput() {
+  const q = $("q");
+  q.addEventListener("input", () => { stopTyping(); ask(q.value); });
+  q.addEventListener("keydown", (e) => { if (e.key === "Enter") { clearTimeout(debounceT); ask(q.value); } });
+  d3.select("#examples").selectAll("li").data(EXAMPLES).join("li").text((d) => d).on("click", (_, d) => typeOut(d));
+  if (new URLSearchParams(location.search).has("demo")) {
+    let k = 0;
+    const next = () => typeOut(EXAMPLES[k++ % EXAMPLES.length], () => setTimeout(next, 4200));
+    setTimeout(next, 1500);
+  }
+}
+function typeOut(text, done) {
+  stopTyping();
+  const q = $("q");
+  let i = text.startsWith(q.value) ? q.value.length : 0;
+  if (i === 0) q.value = "";
+  S.typing = setInterval(() => {
+    if (i >= text.length) { stopTyping(); if (done) done(); return; }
+    q.value += text[i++];
+    ask(q.value);
+  }, 65);
+}
+function stopTyping() { if (S.typing) clearInterval(S.typing); S.typing = null; }
+function esc(s) { return String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+function debounce(fn, ms) { let t; return () => { clearTimeout(t); t = setTimeout(fn, ms); }; }
+</script>
+</body>
+</html>

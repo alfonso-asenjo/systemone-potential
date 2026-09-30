@@ -1,0 +1,10 @@
+semilla 5002, hasta 12 min
+  86 s  muere (Arabia Saudí), nivel 1, 52 bolitas, 1260 puntos
+ 126 s  se come a Uruguay (+200)
+ 126 s  se come a Arabia Saudí (+400)
+ 128 s  se come a Cabo Verde (+800)
+ 155 s  muere (Austria), nivel 1, 17 bolitas, 3050 puntos
+ 206 s  nivel 1 superado, 3260 puntos
+ 290 s  se come a Argentina (+200)
+ 417 s  nivel 2 superado, 5320 puntos
+ 420 s  GANA: nivel 2, 5320 puntos, 1 vidas, 0 bolitas; 900 decisiones, 35 tarde, 0 errores, $0.0000
