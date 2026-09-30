@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>systemone-potential</title>
+<meta name="description" content="Demos de una IA que decide en vez de escribir: jev y Laya puestas a prueba en un comecocos, Bluesky en directo y mapas de España, con los resultados medidos.">
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root {
+  --bg: #ECEFF3; --surface: #FFFFFF; --ink: #141B26; --muted: #5A6577; --line: #D6DCE4;
+  --accent: #D23F28; --accent-soft: #FBE4DF; --jev: #3553C8; --laya: #16845A; --chip: #E4E8ED;
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #0D1218; --surface: #151C25; --ink: #E6EBF1; --muted: #98A3B2; --line: #283341;
+    --accent: #FF6B50; --accent-soft: #3B211C; --jev: #7F99FF; --laya: #3DC98B; --chip: #232D39; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+a { color: inherit; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+header { padding-block: 64px 40px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 16px; }
+h1 { font-family: var(--display); font-stretch: 70%; font-weight: 800; font-size: clamp(44px, 8vw, 92px); line-height: .92;
+  text-transform: uppercase; margin: 0; max-width: 14ch; text-wrap: balance; }
+h1 .x { position: relative; white-space: nowrap; }
+h1 .x::after { content: ""; position: absolute; left: -2%; right: -2%; top: 52%; height: .09em; background: var(--accent);
+  opacity: .85; transform: rotate(-3deg); border-radius: 2px; }
+.lede { max-width: 64ch; font-size: 18px; margin: 24px 0 0; }
+.lede b { font-weight: 700; }
+.types { display: flex; flex-wrap: wrap; gap: 8px; margin: 22px 0 0; }
+.types span { font-family: var(--mono); font-size: 12px; padding: 5px 10px; border-radius: 99px; background: var(--chip); }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin: 28px 0 0; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 15px;
+  text-decoration: none; border: 1px solid var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn:hover { border-color: var(--accent); }
+.btn.primary:hover { background: var(--accent); }
+.btn[aria-disabled="true"] { opacity: .5; pointer-events: none; border-style: dashed; }
+
+h2 { font-family: var(--display); font-stretch: 78%; font-weight: 800; font-size: clamp(28px, 4vw, 40px); line-height: 1; margin: 0 0 22px; }
+section { padding-block: 40px; border-top: 1px solid var(--line); }
+.demos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.demo { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: grid; grid-template-rows: auto 1fr; }
+.demo img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); }
+.demo .pics { display: grid; grid-template-columns: 1.5fr 1fr; border-bottom: 1px solid var(--line); }
+.demo .pics img { border-bottom: 0; aspect-ratio: auto; height: 100%; }
+.demo .pics img + img { border-left: 1px solid var(--line); }
+.demo .body { padding: 18px 20px 20px; display: grid; gap: 10px; align-content: start; }
+.demo h3 { font-family: var(--display); font-stretch: 85%; font-weight: 800; font-size: 24px; line-height: 1.1; margin: 0; }
+.demo p { margin: 0; color: var(--ink); }
+.demo .who { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 6px; }
+.facts span { font-family: var(--mono); font-size: 12px; padding: 3px 8px; border-radius: 4px; background: var(--chip); }
+.demo .links { margin-top: 6px; }
+.soon { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+
+.results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.result { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.result .big { font-family: var(--display); font-stretch: 75%; font-weight: 800; font-size: 40px; line-height: 1; }
+.result .big small { font-size: 16px; font-weight: 500; color: var(--muted); font-stretch: 100%; }
+.result p { margin: 0; font-size: 15px; }
+.result a { font-family: var(--mono); font-size: 12px; color: var(--jev); }
+
+footer { padding-block: 36px 56px; border-top: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+footer p { margin: 0 0 8px; max-width: 90ch; }
+
+@media (max-width: 860px) {
+  .demos, .results { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <p class="eyebrow">systemone-potential</p>
+  <h1>Una IA que decide en vez de <span class="x">escribir</span></h1>
+  <p class="lede">Los modelos <b>«System One»</b> no redactan respuestas: reciben una situación y devuelven una decisión con su probabilidad, en una sola pasada y en milisegundos. Aquí se prueban dos: <b>jev</b>, de TypeSafe, que se usa por API, y <b>Laya</b>, una alternativa abierta que corre gratis en una tarjeta gráfica de casa. El hilo de todo: pasar de alquilar la decisión a tenerla, con los números medidos en cada paso.</p>
+  <div class="types" aria-label="Tipos de pregunta">
+    <span>sí o no · Noul</span><span>elegir una opción · Choice</span><span>poner una nota · Score</span>
+  </div>
+  <div class="links">
+    <a class="btn primary" href="https://github.com/alfonso-asenjo/systemone-potential">Código en GitHub</a>
+    <a class="btn" href="#resultados">Lo que se ha medido</a>
+  </div>
+</header>
+
+<section class="wrap" aria-labelledby="demos-h">
+  <h2 id="demos-h">Las demos</h2>
+  <div class="demos">
+
+    <article class="demo">
+      <div class="pics">
+        <img src="demos/img/comecocos-jev.jpg" alt="El comecocos con la bandera de España en el laberinto, los rivales con sus banderas y un panel con las probabilidades de cada salida" width="900" height="715">
+        <img src="demos/img/comecocos-laya.jpg" alt="El laberinto durante una partida de Laya" width="596" height="626">
+      </div>
+      <div class="body">
+        <h3>La Roja en el laberinto</h3>
+        <p class="who">decide jev, o Laya entrenada con sus decisiones</p>
+        <p>España recorre un laberinto perseguida por los rivales de su Mundial 2026. En cada cruce no decide una persona: decide un modelo, y el panel enseña qué ha elegido y con cuánta seguridad. Son partidas grabadas de verdad: la mejor de jev y la mejor de Laya.</p>
+        <div class="facts"><span>jev: 6 de 20 ganadas</span><span>Laya: 5 de 20</span><span>~300 ms frente a ~60 ms</span><span>Laya: 0 €</span></div>
+        <div class="links">
+          <a class="btn primary" href="demos/comecocos-jev.html">Partida de jev · 5.720 puntos</a>
+          <a class="btn" href="demos/comecocos-laya.html">Partida de Laya · 5.920 puntos</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="demo">
+      <img src="demos/img/casa.jpg" alt="Ilustración isométrica de una casa con jardín; personajes llegan por caminos rotulados con temas llevando farolillos con emoticonos, y una tubería lleva la emoción líquida a botes de colores" width="1200" height="750">
+      <div class="body">
+        <h3>La casa de internet</h3>
+        <p class="who">Bluesky leído por Laya</p>
+        <p>Cada personaje es un post de Bluesky que Laya acaba de leer: llega por el camino de su tema, deja su emoción en el embudo de la puerta y una tubería la lleva, ya líquida, al bote de su color. Es una grabación de casi nueve minutos que guarda solo la emoción y el tema de cada post, nunca su texto ni su autor.</p>
+        <div class="facts"><span>19.713 posts</span><span>~37 posts por segundo</span><span>~2 ms por post</span><span>0 €</span></div>
+        <div class="links">
+          <a class="btn primary" href="bluesky/static/casa.html?grabacion">Ver la casa</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="demo">
+      <img src="demos/img/carreteras.jpg" alt="Mapa de carreteras de los 90 con un plano topográfico de Sigüenza, una polaroid del pueblo y una ficha manuscrita" width="1400" height="788">
+      <div class="body">
+        <h3>El mapa de carreteras</h3>
+        <p class="who">un reordenador afinado elige entre los 8.131 municipios</p>
+        <p>Escribes lo que buscas («pueblo medieval con castillo y catedral») y el copiloto marca con rotulador los pueblos que mejor encajan. Al pulsar uno salen su plano topográfico, una foto y una ficha escrita a mano. Todo en local y sin pagar nada por búsqueda.</p>
+        <div class="facts"><span>8.131 municipios</span><span>~300 ms por búsqueda</span><span>0 €</span></div>
+        <div class="links">
+          <span class="btn" aria-disabled="true">Próximamente, con búsquedas grabadas</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="demo">
+      <img src="demos/img/luces.jpg" alt="Mapa nocturno de España con puntos de luz; los lugares que encajan con la búsqueda brillan más" width="1200" height="692">
+      <div class="body">
+        <h3>Luces de España</h3>
+        <p class="who">jev elige entre 255 lugares; después, los 8.131 municipios</p>
+        <p>Un mapa nocturno que se enciende mientras escribes: cada lugar brilla según la probabilidad que le da el modelo. La primera versión preguntaba a jev por 255 lugares en una sola llamada; la segunda, con todos los municipios, funciona en local.</p>
+        <div class="facts"><span>255 opciones en una llamada</span><span>0,0007 $ por búsqueda con jev</span></div>
+        <div class="links">
+          <span class="btn" aria-disabled="true">Próximamente, con búsquedas grabadas</span>
+        </div>
+      </div>
+    </article>
+
+  </div>
+  <p class="soon">También hay una demo con StarCraft II, en la que jev dirige el ejército y el código ejecuta: su vídeo llegará más adelante.</p>
+</section>
+
+<section class="wrap" id="resultados" aria-labelledby="res-h">
+  <h2 id="res-h">Lo que se ha medido</h2>
+  <div class="results">
+    <div class="result">
+      <div class="big">48 → 92 <small>%</small></div>
+      <p>Cruces del comecocos en los que Laya elige lo mismo que jev, antes y después de aprender de sus decisiones. En partidas, empate técnico: 6 de 20 para jev y 5 de 20 para Laya, a una quinta parte del tiempo y gratis.</p>
+      <a href="https://github.com/alfonso-asenjo/systemone-potential/blob/main/docs/laya-vs-jev.md">Diario: Laya contra jev</a>
+    </div>
+    <div class="result">
+      <div class="big">48 → 77 <small>%</small></div>
+      <p>Búsquedas del mapa con pueblos que encajan entre los diez primeros, juzgadas a ciegas: del buscador de palabras al reordenador afinado con las etiquetas de un profesor barato (unos 3,6 $ en total).</p>
+      <a href="https://github.com/alfonso-asenjo/systemone-potential/blob/main/docs/mapa-8000-diario.md">Diario: el mapa de 8.131 municipios</a>
+    </div>
+    <div class="result">
+      <div class="big">29 <small>% frente a 65 %</small></div>
+      <p>Coincidencia con jev al leer la emoción de posts de Bluesky: CLM-8B, de Stanford y NVIDIA, sin entrenar (al nivel del azar), frente a Laya entrenada. CLM se probó comprimido para caber en una gráfica de 8 GB. Otra alternativa abierta que hay que especializar antes de usar.</p>
+      <a href="https://github.com/alfonso-asenjo/systemone-potential/blob/main/docs/clm-8b.md">Diario: la prueba de CLM-8B</a>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p>Código bajo licencia <a href="https://github.com/alfonso-asenjo/systemone-potential/blob/main/LICENSE">Apache 2.0</a>. Los datos de terceros mantienen sus licencias: cartografía del IGN (CC BY 4.0) y de Natural Earth, coordenadas de Wikidata, descripciones a partir de Wikipedia (CC BY-SA) y fotos de Wikimedia Commons, cada una con su autor.</p>
+  <p>Todo lo que corre en local se ha medido en una tarjeta gráfica doméstica, una RTX 2070 de 8 GB.</p>
+</footer>
+
+</body>
+</html>

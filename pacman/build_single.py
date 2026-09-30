@@ -65,6 +65,9 @@ def main():
 
     title = re.search(r"<title>(.*?)</title>", html).group(1)
     description = re.search(r'name="description" content="(.*?)"', html).group(1)
+    if replay.get("brain") == "laya":      # la descripción también dice quién juega
+        description = description.replace("es jev, un modelo de decisión de TypeSafe",
+                                          "es Laya, un modelo abierto entrenado con las decisiones de jev")
     fonts = re.search(r'<link href="(https://fonts\.googleapis\.com[^"]+)"', html).group(1)
 
     head = f"""<title>{title}</title>
