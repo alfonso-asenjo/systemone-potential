@@ -1117,6 +1117,11 @@ $("polaroid").addEventListener("click", (ev) => {
 });
 
 // ------------------------------------------------------------------ conexión con el copiloto
+// ?grabacion: sin servidor, con las respuestas guardadas de las búsquedas de ejemplo (mapa/grabar.py).
+// Es lo que se publica en GitHub Pages, que no tiene servidor ni gráfica.
+const GRABADAS = new URLSearchParams(location.search).has("grabacion")
+  ? fetch("grabacion.json").then((r) => r.json()) : null;
+
 let ws;
 function report(kind, data) {
   try { if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: "log", kind, data })); } catch (e) { /* sin registro no pasa nada */ }
@@ -1124,6 +1129,7 @@ function report(kind, data) {
 window.addEventListener("error", (e) => report("error", { msg: e.message, linea: e.lineno }));
 window.addEventListener("unhandledrejection", (e) => report("error", { msg: String(e.reason) }));
 function connect() {
+  if (GRABADAS) return;
   ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
   ws.onmessage = (ev) => receive(JSON.parse(ev.data));
   ws.onopen = () => report("abierto", { navegador: navigator.userAgent, pantalla: `${innerWidth}x${innerHeight}@${devicePixelRatio}`, tactil: navigator.maxTouchPoints });
@@ -1133,6 +1139,16 @@ let debounceT = null;
 function ask(text) {
   clearTimeout(debounceT);
   debounceT = setTimeout(() => {
+    if (GRABADAS) {
+      GRABADAS.then((saved) => {
+        const t = text.trim(), m = saved[t];
+        S.seq++;
+        if (m || !t) receive({ ...(m || { probs: {}, text: '' }), type: 'answer', seq: S.seq });
+        else if (!Object.keys(saved).some((e) => e.startsWith(t)))
+          $("status").textContent = "Versión grabada: prueba una de las rutas sugeridas.";
+      });
+      return;
+    }
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     S.seq++;
     ws.send(JSON.stringify({ type: "ask", seq: S.seq, text }));

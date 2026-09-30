@@ -94,7 +94,13 @@ function drawBase() {
 }
 
 // ------------------------------------------------------------------ conexión
+// ?grabacion: sin servidor, con las respuestas guardadas de las búsquedas de ejemplo (mapa/grabar.py).
+// Es lo que se publica en GitHub Pages, que no tiene servidor ni gráfica.
+const GRABADAS = new URLSearchParams(location.search).has('grabacion')
+  ? fetch('grabacion.json').then((r) => r.json()) : null;
+
 function connect() {
+  if (GRABADAS) return;
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   ws = new WebSocket(`${proto}://${location.host}/ws`);
   ws.onmessage = (ev) => receive(JSON.parse(ev.data));
@@ -105,6 +111,16 @@ let debounce = null;
 function ask(text) {
   clearTimeout(debounce);
   debounce = setTimeout(() => {
+    if (GRABADAS) {
+      GRABADAS.then((saved) => {
+        const t = text.trim(), m = saved[t];
+        state.seq++;
+        if (m || !t) receive({ ...(m || { probs: {}, text: '' }), type: 'answer', seq: state.seq });
+        else if (!Object.keys(saved).some((e) => e.startsWith(t)))
+          setStatus('versión grabada: prueba una de las búsquedas de ejemplo', false);
+      });
+      return;
+    }
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
     state.seq++;
     ws.send(JSON.stringify({ type: 'ask', seq: state.seq, text }));

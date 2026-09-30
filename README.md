@@ -24,7 +24,8 @@ La casa también funciona sin servidor ni modelo: `bluesky/static/casa.html?grab
 reproduce en bucle una grabación de casi 9 minutos (`bluesky/static/grabacion.json`, hecha
 con `bluesky/record.py`) que guarda solo la emoción y el tema de cada post, nunca su texto ni
 su autor. El comecocos tiene lo mismo con sus partidas grabadas (`?replay=<partida>` y
-`pacman/build_single.py`).
+`pacman/build_single.py`). Los mapas, con `?grabacion`, responden a sus búsquedas de
+ejemplo con las respuestas guardadas por `mapa/grabar.py`.
 
 ## Resultados y diarios
 
