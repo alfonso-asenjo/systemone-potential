@@ -14,6 +14,8 @@ const DANGER_TEXT = [
 ];
 
 const $ = (id) => document.getElementById(id);
+// 1 $ = 0,88 €: referencia del BCE del 30-09-2026 (0,8825). Las APIs cobran en dólares.
+const EUR_PER_USD = 0.88;
 const pct = (v) => `${Math.round(v * 100)} %`;
 
 export class Panel {
@@ -163,7 +165,7 @@ export class Panel {
     $('stat-lat').textContent = stats.latency === null ? '–' : `${Math.round(medianLatency ?? stats.latency)} ms`;
     $('stat-calls').textContent = stats.calls;
     $('stat-late').textContent = stats.late;
-    $('stat-cost').textContent = `$${stats.cost.toFixed(4).replace('.', ',')}`;
+    $('stat-cost').textContent = `${(stats.cost * EUR_PER_USD).toFixed(4).replace('.', ',')} €`;
   }
 
   // ---------------------------------------------------------------- rivals

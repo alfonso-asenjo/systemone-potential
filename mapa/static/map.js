@@ -2,6 +2,8 @@
 // probabilidad que jev le da a lo que escribes. La luz se mueve con cada tecla.
 
 const $ = (id) => document.getElementById(id);
+// 1 $ = 0,88 €: referencia del BCE del 30-09-2026 (0,8825). Las APIs cobran en dólares.
+const EUR_PER_USD = 0.88;
 const EXAMPLES = [
   'pueblo tranquilo con playa',
   'pueblo tranquilo con playa y surf',
@@ -98,7 +100,7 @@ function receive(msg) {
   state.allowed = msg.allowed ? new Set(msg.allowed) : null;
 
   if (msg.latency_ms) $('lat').textContent = `${msg.latency_ms} ms`;
-  if (msg.total_cost_usd != null) $('cost').textContent = `$${msg.total_cost_usd.toFixed(4)}`;
+  if (msg.total_cost_usd != null) $('cost').textContent = `${(msg.total_cost_usd * EUR_PER_USD).toFixed(4).replace('.', ',')} €`;
   $('opts').textContent = msg.allowed ? msg.allowed.length : state.places.length;
 
   const rules = msg.notes || [];

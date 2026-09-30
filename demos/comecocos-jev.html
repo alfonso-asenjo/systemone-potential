@@ -448,7 +448,7 @@ canvas {
       <div class="stat"><span>Latencia</span><b id="stat-lat">–</b></div>
       <div class="stat"><span>Decisiones</span><b id="stat-calls">0</b></div>
       <div class="stat"><span>Tarde al cruce</span><b id="stat-late">0</b></div>
-      <div class="stat"><span>Coste</span><b id="stat-cost">$0,0000</b></div>
+      <div class="stat"><span>Coste</span><b id="stat-cost">0,0000 €</b></div>
       <details>
         <summary>Estado enviado a <span data-brain>jev</span></summary>
         <pre id="state-json">Aún no se ha enviado ningún estado.</pre>
@@ -1874,6 +1874,8 @@ const DANGER_TEXT = [
 ];
 
 const $ = (id) => document.getElementById(id);
+// 1 $ = 0,88 €: referencia del BCE del 30-09-2026 (0,8825). Las APIs cobran en dólares.
+const EUR_PER_USD = 0.88;
 const pct = (v) => `${Math.round(v * 100)} %`;
 
 class Panel {
@@ -2023,7 +2025,7 @@ class Panel {
     $('stat-lat').textContent = stats.latency === null ? '–' : `${Math.round(medianLatency ?? stats.latency)} ms`;
     $('stat-calls').textContent = stats.calls;
     $('stat-late').textContent = stats.late;
-    $('stat-cost').textContent = `$${stats.cost.toFixed(4).replace('.', ',')}`;
+    $('stat-cost').textContent = `${(stats.cost * EUR_PER_USD).toFixed(4).replace('.', ',')} €`;
   }
 
   // ---------------------------------------------------------------- rivals

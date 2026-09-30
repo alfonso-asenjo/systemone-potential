@@ -453,7 +453,7 @@ function speed(st) {
   document.getElementById("speed").innerHTML =
     `Una tarjeta gráfica de casa lee <strong>${nf(st.posts_per_s)} posts por segundo</strong>, ` +
     `a <strong>${nf(st.ms_per_decision, 1)} ms por decisión</strong>. ` +
-    `Lleva ${nf(st.classified)} posts por 0 €; con jev habrían sido ${nf(st.jev_cost_usd, 2)} $.`;
+    `Lleva ${nf(st.classified)} posts por 0 €; con jev habrían sido ${nf(st.jev_cost_usd * 0.88, 2)} €.`;
   const emo = 1 - (st.emotions.neutral || 0);
   table.querySelector("tbody").innerHTML = EMOTIONS.map(([k, n]) =>
     `<tr><th scope="row">${n}</th><td class="num">${pct(emo ? (st.emotions[k] || 0) / emo : 0)}</td></tr>`).join("");

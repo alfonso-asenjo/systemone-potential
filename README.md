@@ -47,7 +47,7 @@ Dos entornos:
 Claves: copia `.env.example` a `.env` y rellena las que uses. jev sirve por cualquiera de estos
 proveedores, con la misma API:
 
-- `JEV_PROVIDER=openrouter` + `OPENROUTER_API_KEY` (sin lista de espera, 0,042 $ por millón de tokens)
+- `JEV_PROVIDER=openrouter` + `OPENROUTER_API_KEY` (sin lista de espera, unos 0,04 € por millón de tokens)
 - `JEV_PROVIDER=cloudflare` + `CLOUDFLARE_ACCOUNT_ID` + `CLOUDFLARE_API_TOKEN`
 - `JEV_PROVIDER=typesafe` + `TYPESAFE_API_KEY`
 
@@ -61,8 +61,8 @@ Por tamaño o porque no se puede publicar, y cómo se regenera:
 | Qué | Cómo se consigue |
 |---|---|
 | `models/` (11 GB) | Laya base desde Hugging Face ([multilingual](https://huggingface.co/convaiinnovations/laya-multilingual), [typed-decisions](https://huggingface.co/convaiinnovations/laya-typed-decisions)) y `BAAI/bge-reranker-v2-m3` y `BAAI/bge-m3`. Los alumnos se entrenan con `pacman/distill/train.py`, `bluesky/train.py`, `mapa/big_rerank.py` y `mapa/big_bge_train.py` |
-| `mapa/data/` (313 MB) | Los scripts `mapa/big_*.py`, en el orden de [`docs/mapa-8000-diario.md`](docs/mapa-8000-diario.md): Wikipedia y Wikidata, descripciones y etiquetas de gpt-6-luna (unos 3,6 $). La web ya lleva lo que necesita en `mapa/static_big/` |
-| Posts de Bluesky | Son de otras personas. Se capturan con `bluesky/spike/capture.py` y los etiqueta jev con `bluesky/label.py` (unos 0,21 $ por 6.700 posts) |
+| `mapa/data/` (313 MB) | Los scripts `mapa/big_*.py`, en el orden de [`docs/mapa-8000-diario.md`](docs/mapa-8000-diario.md): Wikipedia y Wikidata, descripciones y etiquetas de gpt-6-luna (unos 3 €). La web ya lleva lo que necesita en `mapa/static_big/` |
+| Posts de Bluesky | Son de otras personas. Se capturan con `bluesky/spike/capture.py` y los etiqueta jev con `bluesky/label.py` (unos 0,19 € por 6.700 posts) |
 | Decisiones de jev en el comecocos | Se sacan de tus propias partidas con `pacman/distill/dataset.py` |
 | Registros de partidas y servidores | Llevan IPs y rutas del ordenador donde se ejecutaron |
 
